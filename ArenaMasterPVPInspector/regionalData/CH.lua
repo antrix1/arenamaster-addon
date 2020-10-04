@@ -1,0 +1,1 @@
+AMPVP_REGIONDATA_CH = {}
