@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a utility addon for ArenaMaster web app: https://arenamaster.io. By installing this addon, you'll be able to easily check any player's arena and rbg experience without having to leave the game.
+This is a utility addon for the ArenaMaster web app: <a href="https://arenamaster.io" target="_blank" rel="noopener">https://arenamaster.io</a>. By installing this addon, you'll be able to easily check any player's arena and rbg experience without having to leave the game.
 
 ## Unit Frame Hover
 
@@ -46,7 +46,7 @@ The URL is already selected. All you have to do is `CTRL + C` the link and paste
 
 If you're using the Twitch app to manage your addons, <a href="twitch://">open the app</a> and navigate to the Mods -> Get More Addons section where you can find the addon by name.
 
-In case you prefer to download the zip and unpack it in your addons directory yourself, click the [Download from CurseForge](https://www.curseforge.com/wow/addons/).
+In case you prefer to download the zip and unpack it in your addons directory yourself, click the <a href="https://www.curseforge.com/wow/addons/" target="_blank" rel="noopener">Download from CurseForge</a>
 
 Once installed and in-game, make sure to only enable the ArenaMaster data for your region by unchecking the other regions inside the AddonList.
 
@@ -58,6 +58,6 @@ As more players start to use the web app, the data will be updated more frequent
 
 Interested in supporting the ongoing development of ArenaMaster.IO and getting some in-app benefits while you're at it? Visit our Patreon page to learn more about the mission and available perks.
 
-<a href="https://www.patreon.com/bePatron?u=16032241" >
-  <img src="https://arenamaster.s3.eu-central-1.amazonaws.com/addon/patreon-btn.jpg" alt="Support on Patreon" width="250" style="margin-left: -15px;">
+<a href="https://www.patreon.com/bePatron?u=16032241" target="_blank" rel="noopener">
+  <img src="https://arenamaster.s3.eu-central-1.amazonaws.com/addon/patreon-btn.png" alt="Support on Patreon" width="250">
 </a>
