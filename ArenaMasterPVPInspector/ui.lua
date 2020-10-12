@@ -7,7 +7,10 @@ local regionsTable = {
 	[5] = "ch"
 }
 
+
+
 local dropdownTableLFGData = {}
+local dropdownData = {}
 
 local dropdownTableBNetData = {}
 local friendsTooltipShown = false
@@ -25,9 +28,9 @@ local function AMPVPGetProfileLinkFunc(self, ...)
 		
 		local name2, realm 
 		
-		if (unitName == nil and drop.tempNameHooked ~= nil) or (unitName ~= nil and drop.tempNameHooked ~= nil and unitServer == nil) then
+		if (unitName == nil and dropdownData.tempNameHooked ~= nil) or (unitName ~= nil and dropdownData.tempNameHooked ~= nil and unitServer == nil) then
 			
-			name2, realm = string.split("-", drop.tempNameHooked)
+			name2, realm = string.split("-", dropdownData.tempNameHooked)
 			unitName = name2
 			unitServer = realm
 		
@@ -49,7 +52,7 @@ local function AMPVPGetProfileLinkFunc(self, ...)
 		AMPVP_CopyCharNameFrame2InputFrameTitleText:SetFocus()
 		
 		dropdownTableLFGData = {}
-		drop.tempNameHooked = nil
+		dropdownData.tempNameHooked = nil
 		
 	end
 end
@@ -59,7 +62,7 @@ hooksecurefunc("LFGListUtil_GetApplicantMemberMenu", function(applicantID, membe
 
 	dropdownTableLFGData = {}
 	dropdownTableBNetData = {}
-	_G["UIDROPDOWNMENU_INIT_MENU"].tempNameHooked = nil
+	dropdownData.tempNameHooked = nil
 	
     local name, class, localizedClass, level, itemLevel, tank, healer, damage, assignedRole = C_LFGList.GetApplicantMemberInfo(applicantID, memberIdx);
     local id, status, pendingStatus, numMembers, isNew, comment = C_LFGList.GetApplicantInfo(applicantID);
@@ -80,7 +83,7 @@ hooksecurefunc("LFGListUtil_GetSearchEntryMenu", function(resultID)
 	
 	dropdownTableLFGData = {}
 	dropdownTableBNetData = {}
-	_G["UIDROPDOWNMENU_INIT_MENU"].tempNameHooked = nil
+	dropdownData.tempNameHooked = nil
 	
     local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID);
 	local name = searchResultInfo.leaderName
@@ -150,7 +153,8 @@ DropDownList1:HookScript("OnShow", function(self, ...)
 		namePH, realm = string.split("-", dropdownTableBNetData["name"])
 	end
 	
-	if _G["UIDROPDOWNMENU_INIT_MENU"].tempNameHooked == nil then
+	if dropdownData.tempNameHooked == nil then
+	
 		UIDropDownMenu_AddSeparator()
 		local info = UIDropDownMenu_CreateInfo()
 		info.text = "ArenaMaster Profile"
@@ -158,7 +162,7 @@ DropDownList1:HookScript("OnShow", function(self, ...)
 		info.func = AMPVPGetProfileLinkFunc
 		info.colorCode = "|cffc72429"
 		info.value = "AMPVPLinkGet"
-		_G["UIDROPDOWNMENU_INIT_MENU"].tempNameHooked = namePH.."-"..realm
+		dropdownData.tempNameHooked = namePH.."-"..realm
 		UIDropDownMenu_AddButton(info)
 		dropdownTableBNetData = {}
 		dropdownTableLFGData = {}
@@ -174,7 +178,7 @@ hooksecurefunc("UnitPopup_ShowMenu", function(self, ...)
 
 	dropdownTableLFGData = {}
 	
-	_G["UIDROPDOWNMENU_INIT_MENU"].tempNameHooked = nil
+	dropdownData.tempNameHooked = nil
 	
 	local unit = self.unit
 	local ctype, _, uName = ...
@@ -193,7 +197,7 @@ hooksecurefunc("UnitPopup_ShowMenu", function(self, ...)
 			info.func = AMPVPGetProfileLinkFunc
 			info.colorCode = "|cffc72429"
 			info.value = "AMPVPLinkGet"
-			_G["UIDROPDOWNMENU_INIT_MENU"].tempNameHooked = uName
+			dropdownData.tempNameHooked = uName
 
 			UIDropDownMenu_AddButton(info)
 		
@@ -203,7 +207,7 @@ hooksecurefunc("UnitPopup_ShowMenu", function(self, ...)
 	end
 	
 	if UnitIsPlayer(unit) and not self.accountInfo then
-	
+		
 		UIDropDownMenu_AddSeparator()
 		
 		local info = UIDropDownMenu_CreateInfo()
@@ -215,7 +219,7 @@ hooksecurefunc("UnitPopup_ShowMenu", function(self, ...)
 		info.colorCode = "|cffc72429"
 		info.value = "AMPVPLinkGet"
 		
-		_G["UIDROPDOWNMENU_INIT_MENU"].tempNameHooked = uName
+		dropdownData.tempNameHooked = uName
 		
 		UIDropDownMenu_AddButton(info)
 		
@@ -297,6 +301,8 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
 	
 	local name, realm = UnitName(unit), select(2,UnitName(unit))
 	local compName = nil
+	
+	if name == nil then return end
 	
 	if realm == nil then
 		realm = GetRealmName()
