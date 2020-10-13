@@ -24,9 +24,9 @@ local russianRealmsEng = {
 }
 
 local function tableHasEntries(tableN)
-	
+
 	local hasEntries = false
-	
+
 	if tableN ~= nil then
 		for k, v in pairs(tableN) do
 			if k ~= nil then
@@ -36,9 +36,9 @@ local function tableHasEntries(tableN)
 	else
 		return false
 	end
-	
+
 	return hasEntries
-	
+
 end
 
 if region == 1 then
@@ -87,14 +87,14 @@ else
 end
 
 function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor)
-	
+
 	local regionDB = AMPVP_REGIONDATA
 	local origOwner = GameTooltip:GetOwner()
-	
+
 	if frameOwner ~= nil then
 		GameTooltip:SetOwner(frameOwner, ownerAnchor)
 	end
-	
+
 	userName = string.gsub(userName, " ", "")
 
 	local tempUserName, tempRealm = string.split("-", userName)
@@ -104,7 +104,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			userName = tempUserName.."-"..realmname
 		end
 	end
-	
+
 	for realmName, d in pairs(russianRealmsEng) do
 		if string.gsub(realmName, " ", "") == tempRealm then
 			userName = tempUserName.."-"..d
@@ -112,7 +112,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 	end
 
 	if regionDB[userName] ~= nil and GameTooltip.ampvpHooked == nil then
-		
+
 		local twosaccexp = regionDB[userName]["a2s"]
 		local threesaccexp = regionDB[userName]["a3s"]
 		local twoscharexp = regionDB[userName]["e2s"]
@@ -120,22 +120,22 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		local rbgexpacc = regionDB[userName]["aRBG"]
 		local rbgexpchar = regionDB[userName]["eRBG"]
 		local lastUpdated = regionDB[userName]["lu"]
-		
+
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine("|cffc72429ArenaMaster Info: |r")
-		
+
 		if twosaccexp ~= nil and twosaccexp ~= 0 then
 			GameTooltip:AddDoubleLine("2v2 Best:", AMPVP_RatingColorManager(twosaccexp))
 		end
-		
+
 		if threesaccexp ~= nil and threesaccexp ~= 0 then
 			GameTooltip:AddDoubleLine("3v3 Best:", AMPVP_RatingColorManager(threesaccexp))
 		end
-		
+
 		if twoscharexp ~= nil and twoscharexp ~= 0 and AMPVP_CheckBracketDiff(userName, twoscharexp, twosaccexp) then
 			GameTooltip:AddDoubleLine("2v2 Exp:", AMPVP_RatingColorManager(twoscharexp))
 		end
-		
+
 		if threescharexp ~= nil and threescharexp ~= 0 and AMPVP_CheckBracketDiff(userName, threescharexp, threesaccexp) then
 			GameTooltip:AddDoubleLine("3v3 Exp:", AMPVP_RatingColorManager(threescharexp))
 		end
@@ -143,19 +143,19 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		if rbgexpacc ~= nil and rbgexpacc ~= 0 then
 			GameTooltip:AddDoubleLine("RBG Best:", AMPVP_RatingColorManager(rbgexpacc))
 		end
-		
+
 		if rbgexpchar ~= nil and rbgexpchar ~= 0 and AMPVP_CheckBracketDiff(userName, rbgexpchar, rbgexpacc) then
 			GameTooltip:AddDoubleLine("RBG Exp:", AMPVP_RatingColorManager(rbgexpchar))
 		end
-		
+
 		if lastUpdated ~= nil then
 			GameTooltip:AddDoubleLine("Last Updated:", lastUpdated)
 		end
-		
+
 		if addSpacePlus then
 			GameTooltip:AddLine(" ")
 		end
-		
+
 		if GameTooltip.ampvpHooked == nil then
 			GameTooltip.ampvpHooked = true
 		end
@@ -178,20 +178,20 @@ end
 
 
 function AMPVP_AddTooltipFrameText(userName)
-	
+
 	local regionDB = AMPVP_REGIONDATA
-	
+
 	userName = string.gsub(userName, " ", "")
 
 	local tempUserName, tempRealm = string.split("-", userName)
-	
+
 
 	for realmname, v in pairs(AMPVP_REALMLIST) do
 		if string.gsub(realmname, " ", "") == tempRealm then
 			userName = tempUserName.."-"..realmname
 		end
 	end
-	
+
 	for realmName, d in pairs(russianRealmsEng) do
 		if string.gsub(realmName, " ", "") == tempRealm then
 			userName = tempUserName.."-"..d
@@ -200,12 +200,12 @@ function AMPVP_AddTooltipFrameText(userName)
 
 	AMPVP_friendsTTlines["nrLines"] = 0
 	local nrLines = AMPVP_friendsTTlines["nrLines"]
-	
+
 	if regionDB[userName] ~= nil then
-		
+
 		nrLines = nrLines + 1
 		AMPVP_friendsTTlines[nrLines] = "|cffc72429ArenaMaster Info: |r"
-		
+
 		local twosaccexp = regionDB[userName]["a2s"]
 		local threesaccexp = regionDB[userName]["a3s"]
 		local twoscharexp = regionDB[userName]["e2s"]
@@ -218,17 +218,17 @@ function AMPVP_AddTooltipFrameText(userName)
 			nrLines = nrLines + 1
 			AMPVP_friendsTTlines[nrLines] = "2v2 Best:-"..AMPVP_RatingColorManager(twosaccexp)
 		end
-		
+
 		if threesaccexp ~= nil and threesaccexp ~= 0 then
 			nrLines = nrLines + 1
 			AMPVP_friendsTTlines[nrLines] = "3v3 Best:-"..AMPVP_RatingColorManager(threesaccexp)
 		end
-		
+
 		if twoscharexp ~= nil and twoscharexp ~= 0 and AMPVP_CheckBracketDiff(userName, twoscharexp, twosaccexp) then
 			nrLines = nrLines + 1
 			AMPVP_friendsTTlines[nrLines] = "2v2 Exp:-"..AMPVP_RatingColorManager(twoscharexp)
 		end
-		
+
 		if threescharexp ~= nil and threescharexp ~= 0 and AMPVP_CheckBracketDiff(userName, threescharexp, threesaccexp) then
 			nrLines = nrLines + 1
 			AMPVP_friendsTTlines[nrLines] = "3v3 Exp:-" .. AMPVP_RatingColorManager(threescharexp)
@@ -238,12 +238,12 @@ function AMPVP_AddTooltipFrameText(userName)
 			nrLines = nrLines + 1
 			AMPVP_friendsTTlines[nrLines] = "RBG Best:-"..AMPVP_RatingColorManager(rbgexpacc)
 		end
-		
+
 		if rbgexpchar ~= nil and rbgexpchar ~= 0 and AMPVP_CheckBracketDiff(userName, rbgexpchar, rbgexpacc) then
 			nrLines = nrLines + 1
 			AMPVP_friendsTTlines[nrLines] = "RBG Exp:-"..AMPVP_RatingColorManager(rbgexpchar)
 		end
-		
+
 		if lastUpdated ~= nil then
 			nrLines = nrLines + 1
 			AMPVP_friendsTTlines[nrLines] = "Last Updated-"..lastUpdated
@@ -253,7 +253,7 @@ function AMPVP_AddTooltipFrameText(userName)
 
 	else
 		nrLines = nrLines + 1
-		
+
 		AMPVP_friendsTTlines[nrLines] = "ArenaMaster - No data available"
 		nrLines = nrLines + 1
 		AMPVP_friendsTTlines[nrLines] = " "
@@ -262,22 +262,22 @@ function AMPVP_AddTooltipFrameText(userName)
 end
 
 function AMPVP_AddTooltipBnet(userName, showName, addSpacePlus, frameOwner, ownerAnchor)
-	
+
 	local regionDB = AMPVP_REGIONDATA
 
 	if frameOwner ~= nil then
 		GameTooltip:SetOwner(frameOwner, ownerAnchor)
 	end
-	
+
 	if showName then
 		GameTooltip:AddLine(userName)
 	end
 	local name, realm = string.split("-", userName)
-	
+
 	AMPVP_PrintDebug("BnetTootip for user: " ..userName.. ", Slug:" ..AMPVP_FixSlangRealms(realm) .. " for realm:" .. realm)
-	
+
 	if regionDB[userName] ~= nil then
-		
+
 		local twosaccexp = regionDB[userName]["a2s"]
 		local threesaccexp = regionDB[userName]["a3s"]
 		local twoscharexp = regionDB[userName]["e2s"]
@@ -285,23 +285,23 @@ function AMPVP_AddTooltipBnet(userName, showName, addSpacePlus, frameOwner, owne
 		local rbgexpacc = regionDB[userName]["aRBG"]
 		local rbgexpchar = regionDB[userName]["eRBG"]
 		local lastUpdated = regionDB[userName]["lu"]
-		
+
 		AMPVP_PrintDebug("Data for this user has returned succesfully")
-		
+
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine("ArenaMaster Info:")
 		if twosaccexp ~= nil and twosaccexp ~= 0 then
 			GameTooltip:AddDoubleLine("2v2 Best:", AMPVP_RatingColorManager(twosaccexp))
 		end
-		
+
 		if threesaccexp ~= nil and threesaccexp ~= 0 then
 			GameTooltip:AddDoubleLine("3v3 Best:", AMPVP_RatingColorManager(threesaccexp))
 		end
-		
+
 		if twoscharexp ~= nil and twoscharexp ~= 0 and AMPVP_CheckBracketDiff(userName, twoscharexp, twosaccexp) then
 			GameTooltip:AddDoubleLine("2v2 Exp:", AMPVP_RatingColorManager(twoscharexp))
 		end
-		
+
 		if threescharexp ~= nil and threescharexp ~= 0 and AMPVP_CheckBracketDiff(userName, threescharexp, threesaccexp) then
 			GameTooltip:AddDoubleLine("3v3 Exp:", AMPVP_RatingColorManager(threescharexp))
 		end
@@ -309,19 +309,19 @@ function AMPVP_AddTooltipBnet(userName, showName, addSpacePlus, frameOwner, owne
 		if rbgexpacc ~= nil and rbgexpacc ~= 0 then
 			GameTooltip:AddDoubleLine("RBG Best:", AMPVP_RatingColorManager(rbgexpacc))
 		end
-		
+
 		if rbgexpchar ~= nil and rbgexpchar ~= 0 and AMPVP_CheckBracketDiff(userName, rbgexpchar, rbgexpacc) then
 			GameTooltip:AddDoubleLine("RBG Exp:", AMPVP_RatingColorManager(rbgexpchar))
 		end
-		
+
 		if lastUpdated ~= nil then
 			GameTooltip:AddDoubleLine("Last Updated:", lastUpdated)
 		end
-		
+
 		if addSpacePlus then
 			GameTooltip:AddLine(" ")
 		end
-		
+
 		GameTooltip:Show()
 	else
 		AMPVP_PrintDebug("This user has no available data...")
@@ -336,7 +336,7 @@ function AMPVP_CheckBracketDiff(user, points1, points2)
 
 	local shouldShow = false
 	local regionDB = AMPVP_REGIONDATA
-	
+
 	local brackets = {
 		2700,
 		2400,
@@ -348,30 +348,30 @@ function AMPVP_CheckBracketDiff(user, points1, points2)
 	if points2 == nil then
 		points2 = 0
 	end
-	
+
 	if points1 == nil then
 		points1 = 0
 	end
-	
+
 	local bracket1 = nil
 	local bracket2 = nil
-	
+
 	for k, v in pairs(brackets) do
 
 		if points1 >= v and points1 > 0 and bracket1 == nil then
 			bracket1 = k
 		end
-		
+
 		if points2 >= v and bracket2 == nil then
 			bracket2 = k
 		end
-	
+
 	end
 
 	if bracket1 ~= nil and bracket2 ~= nil and bracket1 ~= bracket2 then
 		return true
 	end
-	
+
 	if bracket1 ~= nil and bracket2 == nil or bracket1 == nil and bracket2 ~= nil then
 		return true
 	end

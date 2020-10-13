@@ -1,3 +1,95 @@
+if (COMMUNITY_UIDD_REFRESH_PATCH_VERSION or 0) < 2 then
+	COMMUNITY_UIDD_REFRESH_PATCH_VERSION = 2
+	if select(4, GetBuildInfo()) > 8000 then
+		local function CleanDropdowns()
+			if COMMUNITY_UIDD_REFRESH_PATCH_VERSION ~= 2 then
+				return
+			end
+			local f, f2 = FriendsFrame, FriendsTabHeader
+			local s = f:IsShown()
+			f:Hide()
+			f:Show()
+			if not f2:IsShown() then
+				f2:Show()
+				f2:Hide()
+			end
+			if not s then
+				f:Hide()
+			end
+		end
+		hooksecurefunc("Communities_LoadUI", CleanDropdowns)
+		hooksecurefunc("SetCVar", function(n)
+			if n == "lastSelectedClubId" then
+				CleanDropdowns()
+			end
+		end)
+	end
+end
+
+if (UIDROPDOWNMENU_OPEN_PATCH_VERSION or 0) < 1 then
+	UIDROPDOWNMENU_OPEN_PATCH_VERSION = 1
+	hooksecurefunc("UIDropDownMenu_InitializeHelper", function(frame)
+		if UIDROPDOWNMENU_OPEN_PATCH_VERSION ~= 1 then
+			return
+		end
+		if UIDROPDOWNMENU_OPEN_MENU and UIDROPDOWNMENU_OPEN_MENU ~= frame
+		   and not issecurevariable(UIDROPDOWNMENU_OPEN_MENU, "displayMode") then
+			UIDROPDOWNMENU_OPEN_MENU = nil
+			local t, f, prefix, i = _G, issecurevariable, " \0", 1
+			repeat
+				i, t[prefix .. i] = i + 1
+			until f("UIDROPDOWNMENU_OPEN_MENU")
+		end
+	end)
+end
+
+
+if (UIDROPDOWNMENU_VALUE_PATCH_VERSION or 0) < 2 then
+	UIDROPDOWNMENU_VALUE_PATCH_VERSION = 2
+	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
+		if UIDROPDOWNMENU_VALUE_PATCH_VERSION ~= 2 then
+			return
+		end
+		for i=1, UIDROPDOWNMENU_MAXLEVELS do
+			for j=1, UIDROPDOWNMENU_MAXBUTTONS do
+				local b = _G["DropDownList" .. i .. "Button" .. j]
+				if not (issecurevariable(b, "value") or b:IsShown()) then
+					b.value = nil
+					repeat
+						j, b["fx" .. j] = j+1
+					until issecurevariable(b, "value")
+				end
+			end
+		end
+	end)
+end
+
+if (UIDD_REFRESH_OVERREAD_PATCH_VERSION or 0) < 1 then
+	UIDD_REFRESH_OVERREAD_PATCH_VERSION = 1
+	local function drop(t, k)
+		local c = 42
+		t[k] = nil
+		while not issecurevariable(t, k) do
+			if t[c] == nil then
+				t[c] = nil
+			end
+			c = c + 1
+		end
+	end
+	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
+		if UIDD_REFRESH_OVERREAD_PATCH_VERSION ~= 1 then
+			return
+		end
+		for i=1,UIDROPDOWNMENU_MAXLEVELS do
+			for j=1,UIDROPDOWNMENU_MAXBUTTONS do
+				local b, _ = _G["DropDownList" .. i .. "Button" .. j]
+				_ = issecurevariable(b, "checked")      or drop(b, "checked")
+				_ = issecurevariable(b, "notCheckable") or drop(b, "notCheckable")
+			end
+		end
+	end)
+end
+
 local backdrop = {
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
 	edgeFile =  "Interface\\DialogFrame\\UI-DialogBox-Border",
@@ -12,21 +104,21 @@ local backdrop2 = {
 	insets = { left = 4, right = 4, top = 4, bottom = 4 },
 }
 function AMPVP_CreateTableFromString(inputStr, sep)
-	
+
 	local separator = sep
-	
+
 	if separator == nil then
 		separator = "%s"
 	end
-	
+
 	local tempTab = {}
-	
+
 	for str in string.gmatch(inputStr, "([^"..separator.."]+)") do
-		
+
 		table.insert(tempTab, str)
-	
+
 	end
-	
+
 	return tempTab
 
 end
@@ -41,7 +133,7 @@ function AMPVP_CreateFrame(frameName, frameParent, lrOffset, xOffset, yOffset, s
 	frame:SetPoint(lrOffset, frameParent, xOffset, yOffset)
 	frame:SetSize(sizeX, sizeY)
 	frame.t = frame:CreateTexture()
-	frame.t:SetColorTexture(0, 0, 0, alphaBG or 1) 
+	frame.t:SetColorTexture(0, 0, 0, alphaBG or 1)
 	frame.t:SetSize(sizeX - 5, sizeY - 5)
 	frame.t:SetPoint("CENTER", frame, 0, 0)
 	--frame.t:SetAllPoints(frame)
@@ -76,11 +168,11 @@ function AMPVP_CreateFrame2(frameName, frameParent, lrOffset, xOffset, yOffset, 
 end
 
 function AMPVP_AddDoubleLine(frameText1, frameText2, line1, line2)
-	
+
 	if frameText1 ~= nil then
 		frameText1:SetText(line1)
 	end
-	
+
 	if frameText2 ~= nil then
 		frameText2:SetText(line2)
 	end
@@ -88,7 +180,7 @@ function AMPVP_AddDoubleLine(frameText1, frameText2, line1, line2)
 end
 
 function AMPVP_CreateText(frameName, frameParent, lrOffset, xOffset, yOffset, text, fontName)
-	
+
 	if frameParent ~= nil then
 		local frameText = frameParent:CreateFontString(frameName, "ARTWORK", fontName or "GameFontNormal")
 		frameText:SetPoint(lrOffset, frameParent, xOffset, yOffset)
@@ -98,7 +190,7 @@ function AMPVP_CreateText(frameName, frameParent, lrOffset, xOffset, yOffset, te
 end
 
 function AMPVP_CreateText2(frameName, frameParent, lrOffset, xOffset, yOffset, text, fontName)
-	
+
 	if frameParent ~= nil then
 		local frameText = frameParent:CreateFontString(frameName, "ARTWORK", fontName or "GameFontNormal")
 		frameText:SetPoint(lrOffset, frameParent, xOffset, yOffset)
@@ -128,7 +220,7 @@ function AMPVP_CreateButton(buttonName, frameParent, lrOffset, xOffset, yOffset,
 	else
 		button:SetText(text)
 	end
-	
+
 end
 
 function AMPVP_CreateCloseButton(frameParent)
@@ -141,7 +233,7 @@ end
 
 function AMPVP_CreateCheckbox(boxName, frameParent, lrOffset, xOffset, yOffset, text)
 
-	
+
 	local checkbox = CreateFrame("CheckButton", boxName, frameParent, "UICheckButtonTemplate")
 	checkbox:ClearAllPoints()
 	checkbox:SetPoint(lrOffset, frameParent, xOffset, yOffset)
@@ -176,7 +268,7 @@ function AMPVP_CreateEditBox(boxName, frameParent, lrOffset, xOffset, yOffset, s
 end
 
 function AMPVP_CreateText(frameName, frameParent, lrOffset, xOffset, yOffset, text)
-	
+
 	if frameParent ~= nil then
 		local frameText = frameParent:CreateFontString(frameName, "ARTWORK", "GameFontNormal")
 		frameText:SetPoint(lrOffset, frameParent, xOffset, yOffset)
@@ -195,44 +287,44 @@ function AMPVP_CreateButtonText(txt, btnName, frameParent, region, posX, posY, f
 	else
 		btnName:SetSize(sizeX, sizeY)
 	end
-	btnName:SetPoint(region,posX,posY) 
+	btnName:SetPoint(region,posX,posY)
 	btnName.text = btnName:CreateFontString("$parentText", "OVERLAY", font)
 	--btnName.text:SetAllPoints(btnName)
 	btnName.text:SetText(txt)
-	
+
 	if fontColor ~= nil then
 		btnName.text:SetTextColor(unpack(fontColor))
 	end
-	
+
 	if isBlack ~= nil then
-		
+
 		btnName.t = btnName:CreateTexture(nil, "BACKGROUND")
 		btnName.t:SetSize(30, 27)
 		btnName.t:SetColorTexture(0, 0, 0, 0.3)
 		btnName.t:SetPoint("CENTER", btnName, 0, 0)
-		
+
 	end
-	
+
 	if textureWithPath ~= nil then
 		btnName.icon = btnName:CreateTexture("$parentTexture", 'OVERLAY')
 		btnName.icon:SetTexture(textureWithPath)
 		btnName.icon:SetSize(15, 15)
 		btnName.icon:SetPoint('LEFT')
 	end
-	
+
 	if textureWithPath ~= nil then
 		btnName.text:SetPoint('LEFT', btnName.icon, 'RIGHT', 5, 0)
 	else
 		btnName.text:SetPoint('CENTER', btnName, 0, 0)
 	end
-	
+
 end
 
 
 function AMPVP_Print(msg, clr)
-	
+
 	local defClr = "|cffffffff"
-	
+
 	if clr == "green" then
 		defClr = "|cff66ff33"
 	elseif clr == "red" then
@@ -240,17 +332,17 @@ function AMPVP_Print(msg, clr)
 	elseif clr == "blue" then
 		defClr = "|cff0033cc"
 	end
-	
+
 	print("[ArenaMaster.IO]: "..defClr..msg.."|r")
-	
+
 end
 
 function AMPVP_RatingColorManager(points)
-	
+
 	local finalPoints = ""
-	
+
 	--print(points)
-	
+
 	if points >= 2700 then
 		finalPoints = '|cffff8000'..points.."|r"
 	elseif points >= 2400 then
@@ -264,33 +356,33 @@ function AMPVP_RatingColorManager(points)
 	else
 		finalPoints = '|cff9d9d9d'..points.."|r"
 	end
-	
+
 	return finalPoints
 
 end
 
 function AMPVP_FixSlangRealms(realmName)
-	
+
 	local result = "";
-	
+
 	realmName = string.gsub(realmName, " ", "")
-	
+
 	for name, slug in pairs(AMPVP_REALMLIST) do
-		
+
 		name = string.gsub(name, " ", "")
-		
+
 		if name == realmName then
 			result = slug
 		end
-	
+
 	end
-	
-	if result == "" then 
-		
+
+	if result == "" then
+
 		result = realmName -- for cases like russian realms. not yet fixed черныйшрам - 's slug is not available;
-	
+
 	end
-	
+
 	return result
 
 end
