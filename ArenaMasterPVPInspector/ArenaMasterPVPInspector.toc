@@ -1,7 +1,7 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: ArenaMaster PVP Inspector
 ## Author: Antrix, Sadolock / Creepz
-## Version: 1.0
+## Version: 1.1
 ## Notes: ArenaMaster.IO Helper - PVP Inspection UI
 
 modules/framework.lua

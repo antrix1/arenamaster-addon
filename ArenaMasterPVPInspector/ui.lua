@@ -129,8 +129,11 @@ DropDownList1:HookScript("OnShow", function(self, ...)
 				realm = v
 			end
 
+			if k == "characterName" then
+				characterName = v
+			end
+
 		end
-		characterName = BNet_GetValidatedCharacterName(dropMenu.accountInfo.gameAccountInfo.characterName, nil, dropMenu.accountInfo.gameAccountInfo.clientProgram)
 	end
 
 
@@ -424,7 +427,11 @@ local function friedsListFunc2(self)
 		end
 	end
 
-	local _, name, client, realm = BNGetFriendGameAccountInfo(bnetIndex, 1)
+	local accData = C_BattleNet.GetFriendGameAccountInfo(bnetIndex, 1)
+
+	if accData == nil then return end
+
+	local realm, name = accData.realmName, accData.characterName
 
 	if name == "" and realm == "" or name == nil or realm == nil then
 		return

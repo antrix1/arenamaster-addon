@@ -44,11 +44,9 @@ The URL is already selected. All you have to do is `CTRL + C` the link and paste
 
 ## Installation
 
-If you're using the Twitch app to manage your addons, <a href="twitch://">open the app</a> and navigate to the Mods -> Get More Addons section where you can find the addon by name.
+If you're using the Twitch app to manage your addons, open the app and navigate to the Mods -> Get More Addons section where you can find the addon by name.
 
 In case you prefer to download the zip and unpack it in your addons directory yourself, click the <a href="https://www.curseforge.com/wow/addons/" target="_blank" rel="noopener">Download from CurseForge</a>
-
-Once installed and in-game, make sure to only enable the ArenaMaster data for your region by unchecking the other regions inside the AddonList.
 
 Make sure to keep an eye out for updates and update when available. As the web app and addon are in the early stages, there is a chance you'll encounter players that have no data you can view with the addon. You can visit their ArenaMaster profiles in order to add them to our database, and their character data will be available in-game on the next update.
 
@@ -58,6 +56,6 @@ As more players start to use the web app, the data will be updated more frequent
 
 Interested in supporting the ongoing development of ArenaMaster.IO and getting some in-app benefits while you're at it? Visit our Patreon page to learn more about the mission and available perks.
 
-<a href="https://www.patreon.com/bePatron?u=16032241" target="_blank" rel="noopener">
+<a href="https://www.patreon.com/arenamaster" target="_blank" rel="noopener">
   <img src="https://arenamaster.s3.eu-central-1.amazonaws.com/addon/patreon-btn.png" alt="Support on Patreon" width="250">
 </a>
