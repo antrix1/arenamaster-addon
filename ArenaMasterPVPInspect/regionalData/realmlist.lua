@@ -1,4 +1,4 @@
-AMPVP_REALMLIST = { 
+AMPVP_REALMLIST = {
   ["Aggramar"] = "aggramar",
   ["Arathor"] = "arathor",
   ["Aszune"] = "aszune",
@@ -533,4 +533,3 @@ AMPVP_REALMLIST = {
   ["Галакронд"] = "galakrond",
   ["ТкачСмерти"] = "deathweaver",
   }
-  

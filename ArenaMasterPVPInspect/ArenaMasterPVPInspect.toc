@@ -1,5 +1,5 @@
 ## Interface: 90001
-## Title: ArenaMaster PVP Inspector
+## Title: ArenaMaster PVP Inspect
 ## Author: Antrix, Sadolock / Creepz
 ## Version: 1.1
 ## Notes: ArenaMaster.IO Helper - PVP Inspection UI

@@ -46,7 +46,7 @@ The URL is already selected. All you have to do is `CTRL + C` the link and paste
 
 If you're using the Twitch app to manage your addons, open the app and navigate to the Mods -> Get More Addons section where you can find the addon by name.
 
-In case you prefer to download the zip and unpack it in your addons directory yourself, click the <a href="https://www.curseforge.com/wow/addons/" target="_blank" rel="noopener">Download from CurseForge</a>
+In case you prefer to download the zip and unpack it in your addons directory yourself, click the <a href="https://www.curseforge.com/wow/addons/arenamaster/download" target="_blank" rel="noopener">Download from CurseForge</a>
 
 Make sure to keep an eye out for updates and update when available. As the web app and addon are in the early stages, there is a chance you'll encounter players that have no data you can view with the addon. You can visit their ArenaMaster profiles in order to add them to our database, and their character data will be available in-game on the next update.
 

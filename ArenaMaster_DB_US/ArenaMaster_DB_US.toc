@@ -2,9 +2,9 @@
 ## Title: ArenaMaster US Database
 ## Author: Antrix, Sadolock / Creepz
 ## Version: 1.0
-## Dependencies: ArenaMasterPVPInspector
+## Dependencies: ArenaMasterPVPInspect
 ## Notes: ArenaMaster.IO US Players Database
 ## DefaultState: enabled
 ## LoadOnDemand: 1
 
-../ArenaMasterPVPInspector/regionalData/US.lua
+../ArenaMasterPVPInspect/regionalData/US.lua

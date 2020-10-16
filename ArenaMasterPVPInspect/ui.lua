@@ -235,7 +235,7 @@ AMPVP_CreateFrame2("AMPVP_FriendsListTooltip", FriendsFrame, "BOTTOM", 0, -100, 
 ----------------Logo frame Start------------------
 AMPVP_CreateFrame("AMPVP_LogoFrame", AMPVP_CopyCharNameFrame2, "TOP", 0, 61, 60, 60, 0, false)
 AMPVP_LogoFrame:SetFrameStrata("BACKGROUND")
-AMPVP_LogoFrame.t:SetTexture("Interface\\AddOns\\ArenaMasterPVPInspector\\textures\\arenamaster-logo")
+AMPVP_LogoFrame.t:SetTexture("Interface\\AddOns\\ArenaMasterPVPInspect\\textures\\arenamaster-logo")
 AMPVP_LogoFrame.t:SetPoint("CENTER", AMPVP_LogoFrame, 1, 0)
 
 ----------------Logo frame End--------------------
@@ -254,7 +254,7 @@ AMPVP_CopyCharNameFrame2.titleTexture:SetHeight(64)
 AMPVP_CopyCharNameFrame2.titleTexture:SetPoint("TOP", 0, 12)
 AMPVP_CopyCharNameFrame2.title = AMPVP_CopyCharNameFrame2:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 AMPVP_CopyCharNameFrame2.title:SetPoint("TOP", 0, -3)
-AMPVP_CopyCharNameFrame2.title:SetText("ArenaMaster.IO - PVP Inspector")
+AMPVP_CopyCharNameFrame2.title:SetText("ArenaMaster.IO - PVP Inspect")
 
 -----------REGION DROPDOWN + CPYPROFILE END-----------
 
