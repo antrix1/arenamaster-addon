@@ -1,0 +1,6 @@
+package-as: ArenaMasterPvPInspect
+enable-nolib-creation: no
+
+move-folders:
+	ArenaMaster_DB_EU: ArenaMaster_DB_EU
+	ArenaMaster_DB_US: ArenaMaster_DB_US
