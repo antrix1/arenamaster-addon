@@ -507,9 +507,11 @@ AMPVP_FriendsListTooltip:SetScript("OnUpdate", function(self)
 	if FriendsTooltip:IsVisible() then
 
 		maintainTooltipFrame()
+		
+		local a, b, c, x, y = FriendsTooltip:GetPoint()
+		AMPVP_FriendsListTooltip:ClearAllPoints()
+		AMPVP_FriendsListTooltip:SetPoint("BOTTOMLEFT", FriendsTooltip ,"TOPLEFT", x - 35, y + 10)
 
-		local _, _, _, x, y = FriendsTooltip:GetPoint(1)
-		AMPVP_FriendsListTooltip:SetPoint("BOTTOM", FriendsTooltip ,"TOP", x, y + 10)
 		if AMPVP_friendsTTlines["nrLines"] > 2 then
 			-- here the first parameter (270) is the width of the frame, in case you wish to enlarge it a bit.
 			AMPVP_FriendsListTooltip:SetSize(270, (AMPVP_friendsTTlines["nrLines"] * 23))
