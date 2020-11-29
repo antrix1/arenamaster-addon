@@ -133,11 +133,11 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		end
 
 		if twoscharexp ~= nil and twoscharexp ~= 0 and AMPVP_CheckBracketDiff(userName, twoscharexp, twosaccexp) then
-			GameTooltip:AddDoubleLine("2v2 Exp:", AMPVP_RatingColorManager(twoscharexp))
+			GameTooltip:AddDoubleLine("2v2 Character Exp:", AMPVP_RatingColorManager(twoscharexp))
 		end
 
 		if threescharexp ~= nil and threescharexp ~= 0 and AMPVP_CheckBracketDiff(userName, threescharexp, threesaccexp) then
-			GameTooltip:AddDoubleLine("3v3 Exp:", AMPVP_RatingColorManager(threescharexp))
+			GameTooltip:AddDoubleLine("3v3 Character Exp:", AMPVP_RatingColorManager(threescharexp))
 		end
 
 		if rbgexpacc ~= nil and rbgexpacc ~= 0 then
@@ -145,7 +145,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		end
 
 		if rbgexpchar ~= nil and rbgexpchar ~= 0 and AMPVP_CheckBracketDiff(userName, rbgexpchar, rbgexpacc) then
-			GameTooltip:AddDoubleLine("RBG Exp:", AMPVP_RatingColorManager(rbgexpchar))
+			GameTooltip:AddDoubleLine("RBG Character Exp:", AMPVP_RatingColorManager(rbgexpchar))
 		end
 
 		if lastUpdated ~= nil then
@@ -226,12 +226,12 @@ function AMPVP_AddTooltipFrameText(userName)
 
 		if twoscharexp ~= nil and twoscharexp ~= 0 and AMPVP_CheckBracketDiff(userName, twoscharexp, twosaccexp) then
 			nrLines = nrLines + 1
-			AMPVP_friendsTTlines[nrLines] = "2v2 Exp:-"..AMPVP_RatingColorManager(twoscharexp)
+			AMPVP_friendsTTlines[nrLines] = "2v2 Character Exp:-"..AMPVP_RatingColorManager(twoscharexp)
 		end
 
 		if threescharexp ~= nil and threescharexp ~= 0 and AMPVP_CheckBracketDiff(userName, threescharexp, threesaccexp) then
 			nrLines = nrLines + 1
-			AMPVP_friendsTTlines[nrLines] = "3v3 Exp:-" .. AMPVP_RatingColorManager(threescharexp)
+			AMPVP_friendsTTlines[nrLines] = "3v3 Character Exp:-" .. AMPVP_RatingColorManager(threescharexp)
 		end
 
 		if rbgexpacc ~= nil and rbgexpacc ~= 0 then
@@ -241,7 +241,7 @@ function AMPVP_AddTooltipFrameText(userName)
 
 		if rbgexpchar ~= nil and rbgexpchar ~= 0 and AMPVP_CheckBracketDiff(userName, rbgexpchar, rbgexpacc) then
 			nrLines = nrLines + 1
-			AMPVP_friendsTTlines[nrLines] = "RBG Exp:-"..AMPVP_RatingColorManager(rbgexpchar)
+			AMPVP_friendsTTlines[nrLines] = "RBG Character Exp:-"..AMPVP_RatingColorManager(rbgexpchar)
 		end
 
 		if lastUpdated ~= nil then
@@ -299,11 +299,11 @@ function AMPVP_AddTooltipBnet(userName, showName, addSpacePlus, frameOwner, owne
 		end
 
 		if twoscharexp ~= nil and twoscharexp ~= 0 and AMPVP_CheckBracketDiff(userName, twoscharexp, twosaccexp) then
-			GameTooltip:AddDoubleLine("2v2 Exp:", AMPVP_RatingColorManager(twoscharexp))
+			GameTooltip:AddDoubleLine("2v2 Character Exp:", AMPVP_RatingColorManager(twoscharexp))
 		end
 
 		if threescharexp ~= nil and threescharexp ~= 0 and AMPVP_CheckBracketDiff(userName, threescharexp, threesaccexp) then
-			GameTooltip:AddDoubleLine("3v3 Exp:", AMPVP_RatingColorManager(threescharexp))
+			GameTooltip:AddDoubleLine("3v3 Character Exp:", AMPVP_RatingColorManager(threescharexp))
 		end
 
 		if rbgexpacc ~= nil and rbgexpacc ~= 0 then
@@ -311,7 +311,7 @@ function AMPVP_AddTooltipBnet(userName, showName, addSpacePlus, frameOwner, owne
 		end
 
 		if rbgexpchar ~= nil and rbgexpchar ~= 0 and AMPVP_CheckBracketDiff(userName, rbgexpchar, rbgexpacc) then
-			GameTooltip:AddDoubleLine("RBG Exp:", AMPVP_RatingColorManager(rbgexpchar))
+			GameTooltip:AddDoubleLine("RBG Character Exp:", AMPVP_RatingColorManager(rbgexpchar))
 		end
 
 		if lastUpdated ~= nil then
