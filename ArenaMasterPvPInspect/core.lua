@@ -163,8 +163,6 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 
 	else
 		if GameTooltip.ampvpHooked == nil then
-			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine("ArenaMaster - No data available")
 			if addSpacePlus then
 				GameTooltip:AddLine(" ")
 			end
