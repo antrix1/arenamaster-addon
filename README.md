@@ -8,7 +8,17 @@ This is a utility addon for the ArenaMaster web app: <a href="https://arenamaste
 
 You can hover over a player's unit frame in the open world and see at a glance the highest 2v2, 3v3 and rbg rating they've achieved on the character, or the overall best rating if the player has an ArenaMaster account.
 
-![ArenaMaster.IO Unit Frame Hover](https://arenamaster.s3.eu-central-1.amazonaws.com/addon/HoverTooltip.png "ArenaMaster.IO Tooltip Hover")
+With the new addon version, you can see even more PvP info, like current season performance, account achievements, and overall character stats like versatility and health.
+
+![ArenaMaster.IO Unit Frame Hover](https://arenamaster.s3.eu-central-1.amazonaws.com/addon/NewTooltip.png "ArenaMaster.IO Tooltip Hover")
+
+## Settings
+
+With the new update you can control which info you're interested in seeing when in the open world / LFG and you also have a separate config for when you're in arenas or battlegrounds.
+
+Type `/ampvp` in chat to bring up the settings interface.
+
+![ArenaMaster.IO Tooltip Settings](https://arenamaster.s3.eu-central-1.amazonaws.com/addon/TooltipSettings.png "ArenaMaster.IO Tooltip Settings")
 
 ## Battle&#46;net Friends Hover
 

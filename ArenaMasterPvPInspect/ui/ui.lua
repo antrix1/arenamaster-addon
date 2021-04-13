@@ -7,15 +7,21 @@ local regionsTable = {
 	[5] = "ch"
 }
 
-
-
 local dropdownTableLFGData = {}
 local dropdownData = {}
 
 local dropdownTableBNetData = {}
 local friendsTooltipShown = false
 local ampvpFriendsTooltipShown = false
-local rioEnabledData = {}
+
+AMPVP_SettingsUI_InstancedToggleGeneralSettingsUI:SetScript("OnClick", function()
+	AMPVP_SettingsUI_Instanced:Hide()
+	AMPVP_SettingsUI:Show()
+end)
+AMPVP_SettingsUITogglePVPSettingsUI:SetScript("OnClick", function()
+	AMPVP_SettingsUI:Hide()
+	AMPVP_SettingsUI_Instanced:Show()
+end)
 
 local function AMPVPGetProfileLinkFunc(self, ...)
 
@@ -57,50 +63,6 @@ local function AMPVPGetProfileLinkFunc(self, ...)
 	end
 end
 
-
-hooksecurefunc("LFGListUtil_GetApplicantMemberMenu", function(applicantID, memberIdx)
-
-	dropdownTableLFGData = {}
-	dropdownTableBNetData = {}
-	dropdownData.tempNameHooked = nil
-
-    local name, class, localizedClass, level, itemLevel, tank, healer, damage, assignedRole = C_LFGList.GetApplicantMemberInfo(applicantID, memberIdx);
-    local id, status, pendingStatus, numMembers, isNew, comment = C_LFGList.GetApplicantInfo(applicantID);
-	local namePH, realm = string.split("-", name)
-
-	if realm == nil then
-		realm = GetRealmName()
-	end
-
-	if namePH ~= nil and realm ~= nil then
-		dropdownTableLFGData["name"] = namePH
-		dropdownTableLFGData["realm"] = realm
-	end
-
-end)
-
-hooksecurefunc("LFGListUtil_GetSearchEntryMenu", function(resultID)
-
-	dropdownTableLFGData = {}
-	dropdownTableBNetData = {}
-	dropdownData.tempNameHooked = nil
-
-    local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID);
-	local name = searchResultInfo.leaderName
-	local namePH, realm = string.split("-", name)
-
-	if realm == nil then
-		realm = GetRealmName()
-	end
-
-	if namePH ~= nil and realm ~= nil then
-		dropdownTableLFGData["name"] = namePH
-		dropdownTableLFGData["realm"] = realm
-	end
-
-end)
-
-
 hooksecurefunc("UIDropDownMenu_OnHide", function(self)
 
 	dropdownTableBNetData = {}
@@ -109,6 +71,45 @@ hooksecurefunc("UIDropDownMenu_OnHide", function(self)
 end)
 
 DropDownList1:HookScript("OnShow", function(self, ...)
+
+	local lfgName, lfgRealm;
+	dropdownTableLFGData = {}
+	dropdownTableBNetData = {}
+
+	if self.dropdown ~= nil and self.dropdown.clubMemberInfo ~= nil then return end
+
+	for k, v in pairs(self.dropdown) do
+		if self.dropdown.menuList ~= nil then
+			for k,v in pairs(self.dropdown.menuList) do
+				for a, b in pairs(v) do
+					if a == "arg1" then
+						name = b;
+						lfgName, lfgRealm = string.split("-", name)
+						if lfgRealm == nil then
+							lfgRealm = GetRealmName()
+						end
+					end
+				end
+			end
+		end
+	end
+
+	if lfgRealm and lfgName then
+		dropdownData.tempNameHooked = lfgName.."-"..lfgRealm
+		UIDropDownMenu_AddSeparator()
+		local info = UIDropDownMenu_CreateInfo()
+		info.text = "ArenaMaster Profile"
+		info.notCheckable = 1
+		info.func = AMPVPGetProfileLinkFunc
+		info.colorCode = "|cffc72429"
+		info.value = "AMPVPLinkGet"
+		UIDropDownMenu_AddButton(info)
+		dropdownTableBNetData = {}
+		dropdownTableLFGData = {}
+		return
+	end
+
+	dropdownData.tempNameHooked = nil
 
 	dropdownTableBNetData = {}
 
@@ -157,7 +158,7 @@ DropDownList1:HookScript("OnShow", function(self, ...)
 	end
 
 	if dropdownData.tempNameHooked == nil then
-
+		dropdownData.tempNameHooked = namePH.."-"..realm
 		UIDropDownMenu_AddSeparator()
 		local info = UIDropDownMenu_CreateInfo()
 		info.text = "ArenaMaster Profile"
@@ -165,11 +166,9 @@ DropDownList1:HookScript("OnShow", function(self, ...)
 		info.func = AMPVPGetProfileLinkFunc
 		info.colorCode = "|cffc72429"
 		info.value = "AMPVPLinkGet"
-		dropdownData.tempNameHooked = namePH.."-"..realm
 		UIDropDownMenu_AddButton(info)
 		dropdownTableBNetData = {}
 		dropdownTableLFGData = {}
-
 	end
 end)
 
@@ -194,13 +193,13 @@ hooksecurefunc("UnitPopup_ShowMenu", function(self, ...)
 
 			local info = UIDropDownMenu_CreateInfo()
 
+			dropdownData.tempNameHooked = uName
 			info.text = "ArenaMaster Profile"
 			info.owner = self.which
 			info.notCheckable = 1
 			info.func = AMPVPGetProfileLinkFunc
 			info.colorCode = "|cffc72429"
 			info.value = "AMPVPLinkGet"
-			dropdownData.tempNameHooked = uName
 
 			UIDropDownMenu_AddButton(info)
 
@@ -211,10 +210,11 @@ hooksecurefunc("UnitPopup_ShowMenu", function(self, ...)
 
 	if UnitIsPlayer(unit) and not self.accountInfo then
 
-		UIDropDownMenu_AddSeparator()
+		_G.UIDropDownMenu_AddSeparator()
 
-		local info = UIDropDownMenu_CreateInfo()
+		local info = _G.UIDropDownMenu_CreateInfo()
 
+		dropdownData.tempNameHooked = uName
 		info.text = "ArenaMaster Profile"
 		info.owner = self.which
 		info.notCheckable = 1
@@ -222,9 +222,8 @@ hooksecurefunc("UnitPopup_ShowMenu", function(self, ...)
 		info.colorCode = "|cffc72429"
 		info.value = "AMPVPLinkGet"
 
-		dropdownData.tempNameHooked = uName
+		_G.UIDropDownMenu_AddButton(info)
 
-		UIDropDownMenu_AddButton(info)
 
 	end
 end)
@@ -241,7 +240,7 @@ AMPVP_LogoFrame.t:SetPoint("CENTER", AMPVP_LogoFrame, 1, 0)
 ----------------Logo frame End--------------------
 AMPVP_CopyCharNameFrame2:Hide()
 AMPVP_CreateCloseButton(AMPVP_CopyCharNameFrame2)
-AMPVP_CreateText("TextTitle", AMPVP_CopyCharNameFrame2, "CENTER", -0, 15, "Copy and paste on the website")
+AMPVP_CreateText("TextTitle", AMPVP_CopyCharNameFrame2, "CENTER", -0, 15, "Copy and paste in your browser")
 AMPVP_CreateEditBox("cpyName", AMPVP_CopyCharNameFrame2, "LEFT", -20, -15, 400, 20, "")
 AMPVP_CopyCharNameFrame2InputFrameTitleText:SetText("")
 AMPVP_CopyCharNameFrame2InputFrameTitleText:HighlightText()
@@ -284,7 +283,7 @@ hooksecurefunc("LFGListSearchEntry_OnEnter", function(entry)
 			if name ~= nil then
 
 				GameTooltip.ampvpHooked = nil
-				AMPVP_AddTooltipDetails(name, true)
+				AMPVP_AddTooltipDetails(name, false)
 				GameTooltip.ampvpLastID = entry.resultID
 
 			end
@@ -347,6 +346,27 @@ GameTooltip:HookScript("OnUpdate", function(self)
 		return
 	end
 
+	if entry.memberInfo ~= nil then
+		local name = nil;
+		for k, v in pairs(entry.memberInfo) do
+			if k == "name" then
+				name = v
+			end
+		end
+		aname, arealm = string.split("-", name)
+
+		if arealm == nil then
+			arealm = GetRealmName()
+		end
+
+		local finalName = aname.."-"..arealm;
+
+		if finalName ~= nil and finalName ~= "" then
+			AMPVP_AddTooltipDetails(finalName, false)
+		end
+
+	end
+
 	if entry.resultID ~= nil then
 
 		if GameTooltip.ampvpLastID ~= entry.resultID then
@@ -367,7 +387,7 @@ GameTooltip:HookScript("OnUpdate", function(self)
 
 			if name ~= nil then
 				GameTooltip.ampvpHooked = nil
-				AMPVP_AddTooltipDetails(name, true)
+				AMPVP_AddTooltipDetails(name, false)
 				GameTooltip.ampvpLastID = entry.resultID
 			end
 
@@ -402,10 +422,10 @@ GameTooltip:HookScript("OnShow", function(self, ...)
 
 			if IsAddOnLoaded("RaiderIO") then
 				C_Timer.NewTicker(0.001, function()
-					AMPVP_AddTooltipDetails(name, true)
+					AMPVP_AddTooltipDetails(name, false)
 				end, 1)
 			else
-				AMPVP_AddTooltipDetails(name, true)
+				AMPVP_AddTooltipDetails(name, false)
 			end
 
 		end
@@ -439,15 +459,12 @@ local function friedsListFunc2(self)
 
 	local compName = name.."-"..realm
 
-	rioEnabledData["name"] = compName
-
 	local dbg = "BNET Name:" .. compName .. " " .. name .. " " .. realm .. " " .. bnetIndex
 
 	AMPVP_PrintDebug(dbg)
 
 	AMPVP_AddTooltipFrameText(compName)
 	AMPVP_PrintDebug("Spawning own anchor")
-	AMPVP_FriendsListTooltip.isAmPVPFromBnet = true
 
 end
 
@@ -456,7 +473,6 @@ hooksecurefunc(FriendsTooltip, "Show", friedsListFunc2)
 FriendsTooltip:HookScript("OnHide", function(self, ...)
 
 	GameTooltip:Hide()
-	rioEnabledData = {}
 	AMPVP_FriendsListTooltip.isAmPVPFromBnet = nil
 	AMPVP_FriendsListTooltip:Hide()
 end)
@@ -476,6 +492,16 @@ SlashCmdList["AMPVP"] = function(msg)
 		end
 	end
 
+	if cmp == "" then
+
+		if AMPVP_SettingsUI:IsVisible() then
+			AMPVP_SettingsUI:Hide()
+		else
+			AMPVP_SettingsUI:Show()
+		end
+
+	end
+
 end
 
 function AMPVP_PrintDebug(msg)
@@ -487,7 +513,7 @@ function AMPVP_PrintDebug(msg)
 end
 -----------FriendsTooltip Frame Start--------
 local function maintainTooltipFrame()
-	for i=1, 20 do
+	for i=1, 40 do
 		local line = _G["AMPVP_FriendsListTooltipLine"..i]
 		local lineRight = _G["AMPVP_FriendsListTooltipLine"..i.."Right"]
 
@@ -507,19 +533,16 @@ AMPVP_FriendsListTooltip:SetScript("OnUpdate", function(self)
 	if FriendsTooltip:IsVisible() then
 
 		maintainTooltipFrame()
-		
+
 		local a, b, c, x, y = FriendsTooltip:GetPoint()
 		AMPVP_FriendsListTooltip:ClearAllPoints()
-		AMPVP_FriendsListTooltip:SetPoint("BOTTOMLEFT", FriendsTooltip ,"TOPLEFT", x - 35, y + 10)
-
-		if AMPVP_friendsTTlines["nrLines"] > 2 then
-			-- here the first parameter (270) is the width of the frame, in case you wish to enlarge it a bit.
-			AMPVP_FriendsListTooltip:SetSize(270, (AMPVP_friendsTTlines["nrLines"] * 23))
+		if IsAddOnLoaded("RaiderIO") and GameTooltip:IsVisible() then
+			AMPVP_FriendsListTooltip:SetPoint("TOPLEFT", GameTooltip ,"TOPLEFT", GameTooltip:GetWidth() + 5 , y )
 		else
-			AMPVP_FriendsListTooltip:SetSize(270, 35)
+			AMPVP_FriendsListTooltip:SetPoint("TOPLEFT", FriendsTooltip ,"TOPLEFT", FriendsTooltip:GetWidth() + 5, y )
 		end
-		--print(point, x, y)
-		local ySpacer = 20
+
+		local ySpacer = 15
 		for i=1, AMPVP_friendsTTlines["nrLines"] do
 
 			local textLeft, textRight
@@ -554,6 +577,22 @@ AMPVP_FriendsListTooltip:SetScript("OnUpdate", function(self)
 				AMPVP_AddDoubleLine(line, lineRight, textLeft, textRight)
 			end
 
+		end
+
+		if AMPVP_friendsTTlines["nrLines"] > 2 then
+			local linesCount = 0
+			local bottomPaddingAdj = 15
+			for k, v in pairs(AMPVP_friendsTTlines) do
+				if k ~= nil and type(v) == "string" then
+					linesCount = linesCount + 1
+				end
+			end
+			if linesCount > 19 then
+				bottomPaddingAdj = 10
+			end
+			AMPVP_FriendsListTooltip:SetSize(270, (AMPVP_friendsTTlines["nrLines"] * (AMPVP_FriendsListTooltipLine1:GetHeight() * 1.3) + bottomPaddingAdj))
+		else
+			AMPVP_FriendsListTooltip:SetSize(270, 35)
 		end
 
 	end
