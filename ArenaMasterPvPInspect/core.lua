@@ -152,6 +152,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		local health = AMPVP_GetValue(regionDB[userName], "stats.hp")
 		local renownLevel = AMPVP_GetValue(regionDB[userName], "stats.renown")
 		local covenant = AMPVP_GetValue(regionDB[userName], "stats.covenant")
+		local lastUpdated = AMPVP_GetValue(regionDB[userName], "updated_at")
 
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine("|cffc72429ArenaMaster.IO PvP Info: |r")
@@ -163,6 +164,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		local achievementsInit = false
 		local highestAccRatingInit = false
 		local characterStatsInit = false
+		local lastUpdatedInit = false
 		-- current rating
 		if not currentRatingInit and not shouldDisable then
 
@@ -454,6 +456,20 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 
 		end
 
+		if not lastUpdatedInit and lastUpdated and not shouldDisable then
+
+			local titleDisplayed = false
+
+			if not titleDisplayed then
+				if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit or achievementsInit or characterStatsInit then
+					GameTooltip:AddLine(" ")
+				end
+				GameTooltip:AddDoubleLine("Last Updated:", AMPVP_ColorSub(lastUpdated, "white"))
+				lastUpdatedInit = true
+			end
+
+		end
+
 		if GameTooltip.ampvpHooked == nil then
 			GameTooltip.ampvpHooked = true
 		end
@@ -540,6 +556,7 @@ function AMPVP_AddTooltipFrameText(userName)
 		local health = AMPVP_GetValue(regionDB[userName], "stats.hp")
 		local renownLevel = AMPVP_GetValue(regionDB[userName], "stats.renown")
 		local covenant = AMPVP_GetValue(regionDB[userName], "stats.covenant")
+		local lastUpdated = AMPVP_GetValue(regionDB[userName], "updated_at")
 
 		--init vars to avoid multiplcation of lines & avoid padding multiple times when entire sections are disabled
 		local currentRatingInit = false
@@ -548,6 +565,7 @@ function AMPVP_AddTooltipFrameText(userName)
 		local achievementsInit = false
 		local highestAccRatingInit = false
 		local characterStatsInit = false
+		local lastUpdatedInit = false
 		-- current rating
 		if not currentRatingInit and not shouldDisable then
 
@@ -874,10 +892,26 @@ function AMPVP_AddTooltipFrameText(userName)
 			end
 
 			if renownLevel and not renownDisplayed and AMPVP_GetSettingValue("STATS_RENOWN") or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance) then
-				GnrLines = nrLines + 1
+				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Renown", "white").."-"..renownLevel
 				renownDisplayed = true
 				characterStatsInit = true
+			end
+
+		end
+
+		if not lastUpdatedInit and lastUpdated and not shouldDisable then
+
+			local titleDisplayed = false
+
+			if not titleDisplayed then
+				if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit or achievementsInit or characterStatsInit then
+					nrLines = nrLines + 1
+					AMPVP_friendsTTlines[nrLines] = ""
+				end
+				nrLines = nrLines + 1
+				AMPVP_friendsTTlines[nrLines] = "Last Updated:".."-"..AMPVP_ColorSub(lastUpdated, "white")
+				lastUpdatedInit = true
 			end
 
 		end
