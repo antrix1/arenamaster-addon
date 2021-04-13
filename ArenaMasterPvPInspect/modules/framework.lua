@@ -211,7 +211,7 @@ end
 
 function AMPVP_CreateButton(buttonName, frameParent, lrOffset, xOffset, yOffset, sizeX, sizeY, text)
 
-	local button = CreateFrame("Button", buttonName, frameParent, "UIPanelButtonTemplate")
+	local button = CreateFrame("Button", "$parent"..buttonName, frameParent, "UIPanelButtonTemplate")
 	button:SetSize(sizeX,sizeY)
 	button:SetPoint(lrOffset, frameParent, xOffset, yOffset)
 	local textLength = string.len(text)
@@ -234,7 +234,7 @@ end
 function AMPVP_CreateCheckbox(boxName, frameParent, lrOffset, xOffset, yOffset, text)
 
 
-	local checkbox = CreateFrame("CheckButton", boxName, frameParent, "UICheckButtonTemplate")
+	local checkbox = CreateFrame("CheckButton", "$parent"..boxName, frameParent, "UICheckButtonTemplate")
 	checkbox:ClearAllPoints()
 	checkbox:SetPoint(lrOffset, frameParent, xOffset, yOffset)
 	_G[checkbox:GetName() .. "Text"]:SetText(text)
@@ -337,11 +337,34 @@ function AMPVP_Print(msg, clr)
 
 end
 
+function AMPVP_ColorSub(thing, color, isPercentage)
+
+	if not isPercentage then
+		if color == "white" then
+			thing = "|cffffffff"..thing.."|r";
+		elseif color == "redwinrate" then
+			thing = "|cffc43244"..thing.."|r";
+		elseif color == "green" then
+			thing = "|cff66ff33"..thing.."|r";
+		elseif color == "greenwinrate" then
+			thing = "|cff53ca41"..thing.."|r";
+		end
+	else
+		if color == "white" then
+			thing = "|cffffffff"..thing.."%".."|r";
+		elseif color == "redwinrate" then
+			thing = "|cffc43244"..thing.."%".."|r";
+		elseif color == "greenwinrate" then
+			thing = "|cff53ca41"..thing.."%".."|r";
+		end
+	end
+	return thing;
+
+end
+
 function AMPVP_RatingColorManager(points)
 
 	local finalPoints = ""
-
-	--print(points)
 
 	if points >= 2700 then
 		finalPoints = '|cffff8000'..points.."|r"
@@ -349,12 +372,10 @@ function AMPVP_RatingColorManager(points)
 		finalPoints = '|cffa335ee'..points.."|r"
 	elseif points >= 2100 then
 		finalPoints = '|cff0070dd'..points.."|r"
-	elseif points >= 1800 then
+	elseif points >= 1750 then
 		finalPoints = '|cff27ae60'..points.."|r"
-	elseif points >= 1600 then
-		finalPoints = '|cfffff000'..points.."|r"
-	else
-		finalPoints = '|cff9d9d9d'..points.."|r"
+	elseif points < 1750 then
+		finalPoints = '|cffffffff'..points.."|r"
 	end
 
 	return finalPoints
@@ -385,4 +406,169 @@ function AMPVP_FixSlangRealms(realmName)
 
 	return result
 
+end
+
+
+function AMPVP_LoginSettingsLoadSave()
+
+	if AMPVP_SettingsVar == nil then
+		AMPVP_SettingsVar = {
+			addonInitialized = false,
+		--main settings
+			--Current Rating
+			CURR_RATING_2s = true,
+			CURR_RATING_3s = true,
+			CURR_RATING_RBG = true,
+			--Current Season Stats
+			CURR_SEASON_2SW = true,
+			CURR_SEASON_3SW = true,
+			CURR_SEASON_RBGW = true,
+			CURR_SEASON_TITLES = true,
+			--Character Experience
+			CHAR_EXP_2s = true,
+			CHAR_EXP_3s = true,
+			CHAR_EXP_RBG = true,
+			--Highest Account Rating
+			HIGHEST_ACC_2s = true,
+			HIGHEST_ACC_3s = true,
+			HIGHEST_ACC_RBG = true,
+			--Character Stats
+			STATS_ITEMLEVEL = true,
+			STATS_VERSATILITY = true,
+			STATS_COVENANT = true,
+			STATS_RENOWN = true,
+			STATS_HEALTH = true,
+			--Achievements
+			ACHI_SHOW = true,
+			--Misc
+			DISABLE_EMPTY_DATA = false,
+			DISABLE_RAIDS_DUNGEONS = true,
+
+		--arenas&battlegrounds settings
+
+			INST_CURR_RATING_2s = true,
+			INST_CURR_RATING_3s = true,
+			INST_CURR_RATING_RBG = true,
+			--Current Season Stats
+			INST_CURR_SEASON_2SW = true,
+			INST_CURR_SEASON_3SW = true,
+			INST_CURR_SEASON_RBGW = true,
+			INST_CURR_SEASON_TITLES = true,
+			--Character Experience
+			INST_CHAR_EXP_2s = true,
+			INST_CHAR_EXP_3s = true,
+			INST_CHAR_EXP_RBG = true,
+			--Highest Account Rating
+			INST_HIGHEST_ACC_2s = true,
+			INST_HIGHEST_ACC_3s = true,
+			INST_HIGHEST_ACC_RBG = true,
+			--Character Stats
+			INST_STATS_ITEMLEVEL = true,
+			INST_STATS_VERSATILITY = true,
+			INST_STATS_COVENANT = true,
+			INST_STATS_RENOWN = true,
+			INST_STATS_HEALTH = true,
+			--Achievements
+			INST_ACHI_SHOW = true,
+		}
+	end
+end
+
+local frameInitSettings = CreateFrame("frame")
+frameInitSettings:RegisterEvent("PLAYER_LOGIN")
+frameInitSettings:SetScript("OnEvent", AMPVP_LoginSettingsLoadSave)
+
+local function AMPVP_FailsafeReturn(root, query, returnTable)
+	local ids, len = {}, 0
+	for id in query:gmatch('[^.]+') do
+		len = len + 1
+		ids[len]= id
+	end
+
+	local node = root
+	for i=1,len do
+		if type(node) ~= 'table' then return nil end
+		node = node[ids[i]]
+	end
+	return node
+end
+
+local function AMPVP_TableofStringsHasEntries(t,s)
+  if t == nil then return false end
+  local t = t
+  for key in s:gmatch('[^.]+') do
+    if t[ key ] == nil then
+		return false
+	end
+    t = t[ key ]
+  end
+  return t
+end
+
+
+function AMPVP_IsBadReadValue(value)
+	if value == nil then
+		return true
+	end
+
+	if type(value) == "string" then
+		if value == nil or value == "" then
+			return true;
+		end
+	elseif type(value) == "number" then
+		if value == nil or value == 0 then
+			return true;
+		end
+	end
+
+	return false;
+end
+
+function AMPVP_GetValue(tableX, entries, isArray)
+	if tableX == nil or entries == nil then print(entries .. " are null.") return nil end
+
+	local val = nil
+
+	if isArray then
+		local strF = "";
+		local ok = nil;
+		ok = AMPVP_TableofStringsHasEntries(tableX, entries);
+
+		if ok ~= nil and type(ok) == 'table' then
+			for k, v in pairs(ok) do
+				if ok[k] ~= nil and v ~= "" then
+					strF = strF .. v .. "\n"
+				end
+			end
+		end
+		if strF ~= "" then
+			return strF
+		else
+			return nil
+		end
+
+	else
+		val = AMPVP_FailsafeReturn(tableX, entries)
+	end
+
+	if val ~= nil then
+		local isBad = AMPVP_IsBadReadValue(val)
+		if not isBad then
+			return val;
+		end
+	end
+
+	return nil;
+end
+
+function AMPVP_GetSettingValue(setting)
+	local db = AMPVP_SettingsVar
+
+	if db == nil then return end
+
+	if db[setting] ~= nil then
+		return db[setting]
+	end
+
+	return false
 end
