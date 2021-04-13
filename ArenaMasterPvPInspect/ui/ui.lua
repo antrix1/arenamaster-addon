@@ -353,6 +353,9 @@ GameTooltip:HookScript("OnUpdate", function(self)
 				name = v
 			end
 		end
+
+		if name == nil then return end -- fix for communities where people transferred and appear blank within them.
+
 		aname, arealm = string.split("-", name)
 
 		if arealm == nil then
