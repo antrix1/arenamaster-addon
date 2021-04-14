@@ -173,9 +173,9 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			local thsdisplayed = false
 			local rbgdisplayed = false
 
-			if (cr2s and (AMPVP_GetSettingValue("CURR_RATING_2s") or (AMPVP_GetSettingValue("INST_CURR_RATING_2s") and inInstance)) or
-				cr3s and (AMPVP_GetSettingValue("CURR_RATING_3s") or (AMPVP_GetSettingValue("INST_CURR_RATING_3s") and inInstance)) or
-				crrbg and (AMPVP_GetSettingValue("CURR_RATING_RBG") or (AMPVP_GetSettingValue("INST_CURR_RATING_RBG") and inInstance))) then
+			if (cr2s and (AMPVP_GetSettingValue("CURR_RATING_2s") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_2s") and inInstance)) or
+				cr3s and (AMPVP_GetSettingValue("CURR_RATING_3s") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_3s") and inInstance)) or
+				crrbg and (AMPVP_GetSettingValue("CURR_RATING_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_RBG") and inInstance))) then
 				if not titleDisplayed then
 					GameTooltip:AddLine(" ")
 					GameTooltip:AddLine("Current Rating:")
@@ -183,17 +183,17 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				end
 			end
 
-			if cr2s and not tsdisplayed and AMPVP_GetSettingValue("CURR_RATING_2s") or (AMPVP_GetSettingValue("INST_CURR_RATING_2s") and inInstance) then
+			if cr2s and not tsdisplayed and (AMPVP_GetSettingValue("CURR_RATING_2s") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_2s") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("2v2","white"),AMPVP_RatingColorManager(cr2s))
 				tsdisplayed = true
 				currentRatingInit = true
 			end
-			if cr3s and not thsdisplayed and AMPVP_GetSettingValue("CURR_RATING_3s") or (AMPVP_GetSettingValue("INST_CURR_RATING_3s") and inInstance) then
+			if cr3s and not thsdisplayed and (AMPVP_GetSettingValue("CURR_RATING_3s") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_3s") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("3v3", "white"),AMPVP_RatingColorManager(cr3s))
 				thsdisplayed = true
 				currentRatingInit = true
 			end
-			if crrbg and not rbgdisplayed and AMPVP_GetSettingValue("CURR_RATING_RBG") or (AMPVP_GetSettingValue("INST_CURR_RATING_RBG") and inInstance) then
+			if crrbg and not rbgdisplayed and (AMPVP_GetSettingValue("CURR_RATING_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_RBG") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("RBG", "white"),AMPVP_RatingColorManager(crrbg))
 				rbgdisplayed = true
 				currentRatingInit = true
@@ -207,9 +207,9 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			local thsdisplayed = false
 			local rbgdisplayed = false
 
-			if (exp2s and (AMPVP_GetSettingValue("CHAR_EXP_2s") or (AMPVP_GetSettingValue("INST_CHAR_EXP_2s") and inInstance)) or
-				exp3s and (AMPVP_GetSettingValue("CHAR_EXP_3s") or (AMPVP_GetSettingValue("INST_CHAR_EXP_3s") and inInstance)) or
-				exprbg and (AMPVP_GetSettingValue("CHAR_EXP_RBG") or (AMPVP_GetSettingValue("INST_CHAR_EXP_RBG") and inInstance))) then
+			if (exp2s and (AMPVP_GetSettingValue("CHAR_EXP_2s") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_2s") and inInstance)) or
+				exp3s and (AMPVP_GetSettingValue("CHAR_EXP_3s") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_3s") and inInstance)) or
+				exprbg and (AMPVP_GetSettingValue("CHAR_EXP_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_RBG") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit then
 						GameTooltip:AddLine(" ")
@@ -219,17 +219,17 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				end
 			end
 
-			if exp2s and not tsdisplayed and AMPVP_GetSettingValue("CHAR_EXP_2s") or (AMPVP_GetSettingValue("INST_CHAR_EXP_2s") and inInstance) then
+			if exp2s and not tsdisplayed and (AMPVP_GetSettingValue("CHAR_EXP_2s") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_2s") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("2v2","white"),AMPVP_RatingColorManager(exp2s))
 				tsdisplayed = true
 				characterExpInit = true
 			end
-			if exp3s and not thsdisplayed and AMPVP_GetSettingValue("CHAR_EXP_3s") or (AMPVP_GetSettingValue("INST_CHAR_EXP_3s") and inInstance) then
+			if exp3s and not thsdisplayed and (AMPVP_GetSettingValue("CHAR_EXP_3s") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_3s") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("3v3", "white"),AMPVP_RatingColorManager(exp3s))
 				thsdisplayed = true
 				characterExpInit = true
 			end
-			if exprbg and not rbgdisplayed and AMPVP_GetSettingValue("CHAR_EXP_RBG") or (AMPVP_GetSettingValue("INST_CHAR_EXP_RBG") and inInstance) then
+			if exprbg and not rbgdisplayed and (AMPVP_GetSettingValue("CHAR_EXP_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_RBG") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("RBG", "white"),AMPVP_RatingColorManager(exprbg))
 				rbgdisplayed = true
 				characterExpInit = true
@@ -245,9 +245,9 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			local thsdisplayed = false
 			local rbgdisplayed = false
 
-			if (acc2s and (AMPVP_GetSettingValue("HIGHEST_ACC_2s") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_2s") and inInstance)) or
-				acc3s and (AMPVP_GetSettingValue("HIGHEST_ACC_3s") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_3s") and inInstance)) or
-				accrbg and (AMPVP_GetSettingValue("HIGHEST_ACC_RBG") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_RBG") and inInstance))) then
+			if (acc2s and (AMPVP_GetSettingValue("HIGHEST_ACC_2s") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_2s") and inInstance)) or
+				acc3s and (AMPVP_GetSettingValue("HIGHEST_ACC_3s") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_3s") and inInstance)) or
+				accrbg and (AMPVP_GetSettingValue("HIGHEST_ACC_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_RBG") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit then
 						GameTooltip:AddLine(" ")
@@ -257,17 +257,17 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				end
 			end
 
-			if acc2s and not tsdisplayed and AMPVP_GetSettingValue("HIGHEST_ACC_2s") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_2s") and inInstance) then
+			if acc2s and not tsdisplayed and (AMPVP_GetSettingValue("HIGHEST_ACC_2s") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_2s") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("2v2","white"),AMPVP_RatingColorManager(acc2s))
 				tsdisplayed = true
 				highestAccRatingInit = true
 			end
-			if acc3s and not thsdisplayed and AMPVP_GetSettingValue("HIGHEST_ACC_3s") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_3s") and inInstance) then
+			if acc3s and not thsdisplayed and (AMPVP_GetSettingValue("HIGHEST_ACC_3s") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_3s") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("3v3", "white"),AMPVP_RatingColorManager(acc3s))
 				thsdisplayed = true
 				highestAccRatingInit = true
 			end
-			if accrbg and not rbgdisplayed and AMPVP_GetSettingValue("HIGHEST_ACC_RBG") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_RBG") and inInstance) then
+			if accrbg and not rbgdisplayed and (AMPVP_GetSettingValue("HIGHEST_ACC_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_RBG") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("RBG", "white"),AMPVP_RatingColorManager(accrbg))
 				rbgdisplayed = true
 				highestAccRatingInit = true
@@ -280,9 +280,9 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			local tsdisplayed = false
 			local thsdisplayed = false
 			local rbgdisplayed = false
-			if (cseason_2srating and (AMPVP_GetSettingValue("CURR_SEASON_2SW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_2SW") and inInstance)) or
-				cseason_3srating and (AMPVP_GetSettingValue("CURR_SEASON_3SW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_3SW") and inInstance)) or
-				cseason_rbgsrating and (AMPVP_GetSettingValue("CURR_SEASON_RBGW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_RBGW") and inInstance))) then
+			if (cseason_2srating and (AMPVP_GetSettingValue("CURR_SEASON_2SW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_2SW") and inInstance)) or
+				cseason_3srating and (AMPVP_GetSettingValue("CURR_SEASON_3SW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_3SW") and inInstance)) or
+				cseason_rbgsrating and (AMPVP_GetSettingValue("CURR_SEASON_RBGW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_RBGW") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit or characterExpInit or highestAccRatingInit then
 						GameTooltip:AddLine(" ")
@@ -291,7 +291,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 					titleDisplayed = true
 				end
 			end
-			if cseason_2srating and not tsdisplayed and AMPVP_GetSettingValue("CURR_SEASON_2SW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_2SW") and inInstance) then
+			if cseason_2srating and not tsdisplayed and (AMPVP_GetSettingValue("CURR_SEASON_2SW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_2SW") and inInstance)) then
 				if cseason_2swinp ~= nil then
 					if cseason_2swinp < 50 then
 						cseason_2swinp = AMPVP_ColorSub(cseason_2swinp, "redwinrate", true)
@@ -305,7 +305,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				tsdisplayed = true
 				currentSeasonInit = true
 			end
-			if cseason_3srating and not thsdisplayed and AMPVP_GetSettingValue("CURR_SEASON_3SW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_3SW") and inInstance) then
+			if cseason_3srating and not thsdisplayed and (AMPVP_GetSettingValue("CURR_SEASON_3SW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_3SW") and inInstance)) then
 				if cseason_3swinp ~= nil then
 					if cseason_3swinp < 50 then
 						cseason_3swinp = AMPVP_ColorSub(cseason_3swinp, "redwinrate", true)
@@ -319,7 +319,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				thsdisplayed = true
 				currentSeasonInit = true
 			end
-			if cseason_rbgsrating and not rbgdisplayed and AMPVP_GetSettingValue("CURR_SEASON_RBGW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_RBGW") and inInstance) then
+			if cseason_rbgsrating and not rbgdisplayed and (AMPVP_GetSettingValue("CURR_SEASON_RBGW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_RBGW") and inInstance)) then
 				if cseason_rbgswinp ~= nil then
 					if cseason_rbgswinp < 50 then
 						cseason_rbgswinp = AMPVP_ColorSub(cseason_rbgswinp, "redwinrate", true)
@@ -337,7 +337,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		--season titles
 		if cseason_titles and not shouldDisable then
 			local displayed = false
-			if not displayed and (AMPVP_GetSettingValue("CURR_SEASON_TITLES") or (AMPVP_GetSettingValue("INST_CURR_SEASON_TITLES") and inInstance)) then
+			if not displayed and (AMPVP_GetSettingValue("CURR_SEASON_TITLES") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_TITLES") and inInstance)) then
 
 				local multipleTitles = false
 				local titlesLine = {}
@@ -371,7 +371,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		--account achievements
 		if acc_achievements and not shouldDisable and not achievementsInit then
 			local displayed = false
-			if not displayed and (AMPVP_GetSettingValue("ACHI_SHOW") or (AMPVP_GetSettingValue("INST_ACHI_SHOW") and inInstance)) then
+			if not displayed and (AMPVP_GetSettingValue("ACHI_SHOW") and not inInstance or (AMPVP_GetSettingValue("INST_ACHI_SHOW") and inInstance)) then
 
 				local multipleTitles = false
 				local titlesLine = {}
@@ -412,11 +412,11 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			local covenantDisplayed = false
 			local renownDisplayed = false
 
-			if (itemLevel and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) or
-				health and (AMPVP_GetSettingValue("STATS_HEALTH") or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) or
-				covenant and(AMPVP_GetSettingValue("STATS_COVENANT") or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) or
-				versatility and (AMPVP_GetSettingValue("STATS_VERSATILITY") or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance)) or
-				renown and (AMPVP_GetSettingValue("STATS_RENOWN") or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance))) then
+			if (itemLevel and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) or
+				health and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) or
+				covenant and(AMPVP_GetSettingValue("STATS_COVENANT") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) or
+				versatility and (AMPVP_GetSettingValue("STATS_VERSATILITY") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance)) or
+				renown and (AMPVP_GetSettingValue("STATS_RENOWN") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit or achievementsInit then
 						GameTooltip:AddLine(" ")
@@ -426,29 +426,29 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				end
 			end
 
-			if health and not healthDisplayed and AMPVP_GetSettingValue("STATS_HEALTH") or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance) then
+			if health and not healthDisplayed and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("Health","white"), health.."k")
 				healthDisplayed = true
 				characterStatsInit = true
 			end
-			if itemLevel and not itemLevelDisplayed and AMPVP_GetSettingValue("STATS_ITEMLEVEL") or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance) then
+			if itemLevel and not itemLevelDisplayed and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("Item Level", "white"), itemLevel)
 				itemLevelDisplayed = true
 				characterStatsInit = true
 			end
-			if versatility and not versaDisplayed and AMPVP_GetSettingValue("STATS_VERSATILITY") or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance) then
+			if versatility and not versaDisplayed and (AMPVP_GetSettingValue("STATS_VERSATILITY") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("Versatility", "white"), versatility)
 				versaDisplayed = true
 				characterStatsInit = true
 			end
 
-			if covenant and not covenantDisplayed and AMPVP_GetSettingValue("STATS_COVENANT") or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance) then
+			if covenant and not covenantDisplayed and (AMPVP_GetSettingValue("STATS_COVENANT") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("Covenant", "white"), covenant)
 				covenantDisplayed = true
 				characterStatsInit = true
 			end
 
-			if renownLevel and not renownDisplayed and AMPVP_GetSettingValue("STATS_RENOWN") or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance) then
+			if renownLevel and not renownDisplayed and (AMPVP_GetSettingValue("STATS_RENOWN") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance)) then
 				GameTooltip:AddDoubleLine(AMPVP_ColorSub("Renown", "white"), renownLevel)
 				renownDisplayed = true
 				characterStatsInit = true
@@ -499,6 +499,8 @@ function AMPVP_AddTooltipFrameText(userName)
 
 	local tempUserName, tempRealm = string.split("-", userName)
 
+	local inInstance, instanceType = IsInInstance()
+	local shouldDisable = inInstance and AMPVP_GetSettingValue("DISABLE_RAIDS_DUNGEONS") and (instanceType == "raid" or instanceType == "party")
 
 	for realmname, v in pairs(AMPVP_REALMLIST) do
 		if string.gsub(realmname, " ", "") == tempRealm then
@@ -574,9 +576,9 @@ function AMPVP_AddTooltipFrameText(userName)
 			local thsdisplayed = false
 			local rbgdisplayed = false
 
-			if (cr2s and (AMPVP_GetSettingValue("CURR_RATING_2s") or (AMPVP_GetSettingValue("INST_CURR_RATING_2s") and inInstance)) or
-				cr3s and (AMPVP_GetSettingValue("CURR_RATING_3s") or (AMPVP_GetSettingValue("INST_CURR_RATING_3s") and inInstance)) or
-				crrbg and (AMPVP_GetSettingValue("CURR_RATING_RBG") or (AMPVP_GetSettingValue("INST_CURR_RATING_RBG") and inInstance))) then
+			if (cr2s and (AMPVP_GetSettingValue("CURR_RATING_2s") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_2s") and inInstance)) or
+				cr3s and (AMPVP_GetSettingValue("CURR_RATING_3s") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_3s") and inInstance)) or
+				crrbg and (AMPVP_GetSettingValue("CURR_RATING_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_RBG") and inInstance))) then
 				if not titleDisplayed then
 
 					nrLines = nrLines + 1
@@ -585,20 +587,20 @@ function AMPVP_AddTooltipFrameText(userName)
 				end
 			end
 
-			if cr2s and not tsdisplayed and AMPVP_GetSettingValue("CURR_RATING_2s") or (AMPVP_GetSettingValue("INST_CURR_RATING_2s") and inInstance) then
+			if cr2s and not tsdisplayed and (AMPVP_GetSettingValue("CURR_RATING_2s") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_2s") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("2v2","white").."-"..AMPVP_RatingColorManager(cr2s)
 				--GameTooltip:AddDoubleLine(AMPVP_ColorSub("2v2","white"),AMPVP_RatingColorManager(cr2s))
 				tsdisplayed = true
 				currentRatingInit = true
 			end
-			if cr3s and not thsdisplayed and AMPVP_GetSettingValue("CURR_RATING_3s") or (AMPVP_GetSettingValue("INST_CURR_RATING_3s") and inInstance) then
+			if cr3s and not thsdisplayed and (AMPVP_GetSettingValue("CURR_RATING_3s") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_3s") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("3v3","white").."-"..AMPVP_RatingColorManager(cr3s)
 				thsdisplayed = true
 				currentRatingInit = true
 			end
-			if crrbg and not rbgdisplayed and AMPVP_GetSettingValue("CURR_RATING_RBG") or (AMPVP_GetSettingValue("INST_CURR_RATING_RBG") and inInstance) then
+			if crrbg and not rbgdisplayed and (AMPVP_GetSettingValue("CURR_RATING_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_RBG") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("RGB","white").."-"..AMPVP_RatingColorManager(crrbg)
 				rbgdisplayed = true
@@ -613,9 +615,9 @@ function AMPVP_AddTooltipFrameText(userName)
 			local thsdisplayed = false
 			local rbgdisplayed = false
 
-			if (exp2s and (AMPVP_GetSettingValue("CHAR_EXP_2s") or (AMPVP_GetSettingValue("INST_CHAR_EXP_2s") and inInstance)) or
-				exp3s and (AMPVP_GetSettingValue("CHAR_EXP_3s") or (AMPVP_GetSettingValue("INST_CHAR_EXP_3s") and inInstance)) or
-				exprbg and (AMPVP_GetSettingValue("CHAR_EXP_RBG") or (AMPVP_GetSettingValue("INST_CHAR_EXP_RBG") and inInstance))) then
+			if (exp2s and (AMPVP_GetSettingValue("CHAR_EXP_2s") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_2s") and inInstance)) or
+				exp3s and (AMPVP_GetSettingValue("CHAR_EXP_3s") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_3s") and inInstance)) or
+				exprbg and (AMPVP_GetSettingValue("CHAR_EXP_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_RBG") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit then
 						nrLines = nrLines + 1
@@ -627,19 +629,19 @@ function AMPVP_AddTooltipFrameText(userName)
 				end
 			end
 
-			if exp2s and not tsdisplayed and AMPVP_GetSettingValue("CHAR_EXP_2s") or (AMPVP_GetSettingValue("INST_CHAR_EXP_2s") and inInstance) then
+			if exp2s and not tsdisplayed and (AMPVP_GetSettingValue("CHAR_EXP_2s") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_2s") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("2v2","white").."-"..AMPVP_RatingColorManager(exp2s)
 				tsdisplayed = true
 				characterExpInit = true
 			end
-			if exp3s and not thsdisplayed and AMPVP_GetSettingValue("CHAR_EXP_3s") or (AMPVP_GetSettingValue("INST_CHAR_EXP_3s") and inInstance) then
+			if exp3s and not thsdisplayed and (AMPVP_GetSettingValue("CHAR_EXP_3s") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_3s") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("3v3","white").."-"..AMPVP_RatingColorManager(exp3s)
 				thsdisplayed = true
 				characterExpInit = true
 			end
-			if exprbg and not rbgdisplayed and AMPVP_GetSettingValue("CHAR_EXP_RBG") or (AMPVP_GetSettingValue("INST_CHAR_EXP_RBG") and inInstance) then
+			if exprbg and not rbgdisplayed and (AMPVP_GetSettingValue("CHAR_EXP_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_CHAR_EXP_RBG") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("RBG","white").."-"..AMPVP_RatingColorManager(exprbg)
 				rbgdisplayed = true
@@ -656,9 +658,9 @@ function AMPVP_AddTooltipFrameText(userName)
 			local thsdisplayed = false
 			local rbgdisplayed = false
 
-			if (acc2s and (AMPVP_GetSettingValue("HIGHEST_ACC_2s") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_2s") and inInstance)) or
-				acc3s and (AMPVP_GetSettingValue("HIGHEST_ACC_3s") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_3s") and inInstance)) or
-				accrbg and (AMPVP_GetSettingValue("HIGHEST_ACC_RBG") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_RBG") and inInstance))) then
+			if (acc2s and (AMPVP_GetSettingValue("HIGHEST_ACC_2s") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_2s") and inInstance)) or
+				acc3s and (AMPVP_GetSettingValue("HIGHEST_ACC_3s") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_3s") and inInstance)) or
+				accrbg and (AMPVP_GetSettingValue("HIGHEST_ACC_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_RBG") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit then
 						nrLines = nrLines + 1
@@ -670,19 +672,19 @@ function AMPVP_AddTooltipFrameText(userName)
 				end
 			end
 
-			if acc2s and not tsdisplayed and AMPVP_GetSettingValue("HIGHEST_ACC_2s") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_2s") and inInstance) then
+			if acc2s and not tsdisplayed and (AMPVP_GetSettingValue("HIGHEST_ACC_2s") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_2s") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("2v2","white").."-"..AMPVP_RatingColorManager(acc2s)
 				tsdisplayed = true
 				highestAccRatingInit = true
 			end
-			if acc3s and not thsdisplayed and AMPVP_GetSettingValue("HIGHEST_ACC_3s") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_3s") and inInstance) then
+			if acc3s and not thsdisplayed and (AMPVP_GetSettingValue("HIGHEST_ACC_3s") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_3s") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("3v3","white").."-"..AMPVP_RatingColorManager(acc3s)
 				thsdisplayed = true
 				highestAccRatingInit = true
 			end
-			if accrbg and not rbgdisplayed and AMPVP_GetSettingValue("HIGHEST_ACC_RBG") or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_RBG") and inInstance) then
+			if accrbg and not rbgdisplayed and (AMPVP_GetSettingValue("HIGHEST_ACC_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_HIGHEST_ACC_RBG") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("RBG","white").."-"..AMPVP_RatingColorManager(accrbg)
 				rbgdisplayed = true
@@ -696,9 +698,9 @@ function AMPVP_AddTooltipFrameText(userName)
 			local tsdisplayed = false
 			local thsdisplayed = false
 			local rbgdisplayed = false
-			if (cseason_2srating and (AMPVP_GetSettingValue("CURR_SEASON_2SW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_2SW") and inInstance)) or
-				cseason_3srating and (AMPVP_GetSettingValue("CURR_SEASON_3SW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_3SW") and inInstance)) or
-				cseason_rbgsrating and (AMPVP_GetSettingValue("CURR_SEASON_RBGW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_RBGW") and inInstance))) then
+			if (cseason_2srating and (AMPVP_GetSettingValue("CURR_SEASON_2SW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_2SW") and inInstance)) or
+				cseason_3srating and (AMPVP_GetSettingValue("CURR_SEASON_3SW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_3SW") and inInstance)) or
+				cseason_rbgsrating and (AMPVP_GetSettingValue("CURR_SEASON_RBGW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_RBGW") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit or characterExpInit or highestAccRatingInit then
 						nrLines = nrLines + 1
@@ -709,7 +711,7 @@ function AMPVP_AddTooltipFrameText(userName)
 					titleDisplayed = true
 				end
 			end
-			if cseason_2srating and not tsdisplayed and AMPVP_GetSettingValue("CURR_SEASON_2SW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_2SW") and inInstance) then
+			if cseason_2srating and not tsdisplayed and (AMPVP_GetSettingValue("CURR_SEASON_2SW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_2SW") and inInstance)) then
 				if cseason_2swinp ~= nil then
 					if cseason_2swinp < 50 then
 						cseason_2swinp = AMPVP_ColorSub(cseason_2swinp, "redwinrate", true)
@@ -725,7 +727,7 @@ function AMPVP_AddTooltipFrameText(userName)
 				tsdisplayed = true
 				currentSeasonInit = true
 			end
-			if cseason_3srating and not thsdisplayed and AMPVP_GetSettingValue("CURR_SEASON_3SW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_3SW") and inInstance) then
+			if cseason_3srating and not thsdisplayed and (AMPVP_GetSettingValue("CURR_SEASON_3SW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_3SW") and inInstance)) then
 				if cseason_3swinp ~= nil then
 					if cseason_3swinp < 50 then
 						cseason_3swinp = AMPVP_ColorSub(cseason_3swinp, "redwinrate", true)
@@ -741,7 +743,7 @@ function AMPVP_AddTooltipFrameText(userName)
 				thsdisplayed = true
 				currentSeasonInit = true
 			end
-			if cseason_rbgsrating and not rbgdisplayed and AMPVP_GetSettingValue("CURR_SEASON_RBGW") or (AMPVP_GetSettingValue("INST_CURR_SEASON_RBGW") and inInstance) then
+			if cseason_rbgsrating and not rbgdisplayed and (AMPVP_GetSettingValue("CURR_SEASON_RBGW") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_RBGW") and inInstance)) then
 				if cseason_rbgswinp ~= nil then
 					if cseason_rbgswinp < 50 then
 						cseason_rbgswinp = AMPVP_ColorSub(cseason_rbgswinp, "redwinrate", true)
@@ -761,7 +763,7 @@ function AMPVP_AddTooltipFrameText(userName)
 		--season titles
 		if cseason_titles and not shouldDisable then
 			local displayed = false
-			if not displayed and (AMPVP_GetSettingValue("CURR_SEASON_TITLES") or (AMPVP_GetSettingValue("INST_CURR_SEASON_TITLES") and inInstance)) then
+			if not displayed and (AMPVP_GetSettingValue("CURR_SEASON_TITLES") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_SEASON_TITLES") and inInstance)) then
 
 				local multipleTitles = false
 				local titlesLine = {}
@@ -802,7 +804,7 @@ function AMPVP_AddTooltipFrameText(userName)
 		--account achievements
 		if acc_achievements and not shouldDisable and not achievementsInit then
 			local displayed = false
-			if not displayed and (AMPVP_GetSettingValue("ACHI_SHOW") or (AMPVP_GetSettingValue("INST_ACHI_SHOW") and inInstance)) then
+			if not displayed and (AMPVP_GetSettingValue("ACHI_SHOW") and not inInstance or (AMPVP_GetSettingValue("INST_ACHI_SHOW") and inInstance)) then
 
 				local multipleAchievements = false
 				local achievsLines = {}
@@ -849,11 +851,11 @@ function AMPVP_AddTooltipFrameText(userName)
 			local covenantDisplayed = false
 			local renownDisplayed = false
 
-			if (itemLevel and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) or
-				health and (AMPVP_GetSettingValue("STATS_HEALTH") or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) or
-				covenant and(AMPVP_GetSettingValue("STATS_COVENANT") or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) or
-				versatility and (AMPVP_GetSettingValue("STATS_VERSATILITY") or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance)) or
-				renown and (AMPVP_GetSettingValue("STATS_RENOWN") or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance))) then
+			if (itemLevel and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) or
+				health and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) or
+				covenant and(AMPVP_GetSettingValue("STATS_COVENANT") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) or
+				versatility and (AMPVP_GetSettingValue("STATS_VERSATILITY") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance)) or
+				renown and (AMPVP_GetSettingValue("STATS_RENOWN") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit or achievementsInit then
 						nrLines = nrLines + 1
@@ -865,33 +867,33 @@ function AMPVP_AddTooltipFrameText(userName)
 				end
 			end
 
-			if health and not healthDisplayed and AMPVP_GetSettingValue("STATS_HEALTH") or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance) then
+			if health and not healthDisplayed and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Health","white").."-"..health.."k"
 				healthDisplayed = true
 				characterStatsInit = true
 			end
-			if itemLevel and not itemLevelDisplayed and AMPVP_GetSettingValue("STATS_ITEMLEVEL") or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance) then
+			if itemLevel and not itemLevelDisplayed and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Item Level", "white").."-"..itemLevel
 				itemLevelDisplayed = true
 				characterStatsInit = true
 			end
-			if versatility and not versaDisplayed and AMPVP_GetSettingValue("STATS_VERSATILITY") or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance) then
+			if versatility and not versaDisplayed and (AMPVP_GetSettingValue("STATS_VERSATILITY") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Versatility", "white").."-"..versatility
 				versaDisplayed = true
 				characterStatsInit = true
 			end
 
-			if covenant and not covenantDisplayed and AMPVP_GetSettingValue("STATS_COVENANT") or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance) then
+			if covenant and not covenantDisplayed and (AMPVP_GetSettingValue("STATS_COVENANT") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Covenant", "white").."-"..covenant
 				covenantDisplayed = true
 				characterStatsInit = true
 			end
 
-			if renownLevel and not renownDisplayed and AMPVP_GetSettingValue("STATS_RENOWN") or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance) then
+			if renownLevel and not renownDisplayed and (AMPVP_GetSettingValue("STATS_RENOWN") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance)) then
 				nrLines = nrLines + 1
 				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Renown", "white").."-"..renownLevel
 				renownDisplayed = true
