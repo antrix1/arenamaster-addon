@@ -582,7 +582,7 @@ AMPVP_FriendsListTooltip:SetScript("OnUpdate", function(self)
 
 		end
 
-		if AMPVP_friendsTTlines["nrLines"] > 2 then
+		if AMPVP_friendsTTlines["nrLines"] > 1 then
 			local linesCount = 0
 			local bottomPaddingAdj = 15
 			for k, v in pairs(AMPVP_friendsTTlines) do
