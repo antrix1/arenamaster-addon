@@ -91,8 +91,12 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 	local regionDB = AMPVP_REGIONDATA
 	local origOwner = GameTooltip:GetOwner()
 	local inInstance, instanceType = IsInInstance()
+	local inCombatDisable = InCombatLockdown() and AMPVP_GetSettingValue("DISABLE_IN_COMBATENV")
+	local inPVPEnvironmentDisable = AMPVP_GetSettingValue("DISABLE_IN_PVPENV") and inInstance and (instanceType == "arena" or instanceType == "pvp")
 	local shouldDisable = inInstance and AMPVP_GetSettingValue("DISABLE_RAIDS_DUNGEONS") and (instanceType == "raid" or instanceType == "party")
-
+	
+	if inPVPEnvironmentDisable then return end
+	if inCombatDisable then return end
 	if shouldDisable then return end
 
 	if frameOwner ~= nil then
