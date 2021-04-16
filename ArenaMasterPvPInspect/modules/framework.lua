@@ -443,6 +443,8 @@ function AMPVP_LoginSettingsLoadSave()
 			--Misc
 			DISABLE_EMPTY_DATA = false,
 			DISABLE_RAIDS_DUNGEONS = true,
+			DISABLE_IN_COMBATENV = false,
+			DISABLE_IN_PVPENV = false,
 
 		--arenas&battlegrounds settings
 
@@ -472,6 +474,15 @@ function AMPVP_LoginSettingsLoadSave()
 			INST_ACHI_SHOW = true,
 		}
 	end
+	
+	if AMPVP_SettingsVar ~= nil and AMPVP_SettingsVar.DISABLE_IN_COMBATENV == nil then
+		AMPVP_SettingsVar.DISABLE_IN_COMBATENV = false;
+	end
+	
+	if AMPVP_SettingsVar ~= nil and AMPVP_SettingsVar.DISABLE_IN_PVPENV == nil then
+		AMPVP_SettingsVar.DISABLE_IN_PVPENV = false;
+	end
+	
 end
 
 local frameInitSettings = CreateFrame("frame")
