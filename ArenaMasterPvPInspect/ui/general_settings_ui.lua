@@ -1,4 +1,4 @@
-AMPVP_CreateFrame2("AMPVP_SettingsUI", UIParent, "CENTER", 0, 0, 420, 550, 0.6, true)
+AMPVP_CreateFrame2("AMPVP_SettingsUI", UIParent, "CENTER", 0, 0, 420, 580, 0.6, true)
 AMPVP_CreateText("TitleText", AMPVP_SettingsUI, "TOP", 0, -30, "[ArenaMaster] - General Settings Panel")
 AMPVP_CreateCloseButton(AMPVP_SettingsUI)
 --Current Rating
@@ -37,6 +37,8 @@ AMPVP_CreateCheckbox("ACHI_SHOW", AMPVP_SettingsUI, "TOPRIGHT", -150, -365, "Dis
 AMPVP_CreateText("catNoDataAvailable", AMPVP_SettingsUI, "TOPRIGHT", -45, -410, "Remove tooltip when:")
 AMPVP_CreateCheckbox("DISABLE_EMPTY_DATA", AMPVP_SettingsUI, "TOPRIGHT", -150, -425, "No data available")
 AMPVP_CreateCheckbox("DISABLE_RAIDS_DUNGEONS", AMPVP_SettingsUI, "TOPRIGHT", -150, -450, "In dungeons/raids")
+AMPVP_CreateCheckbox("DISABLE_IN_COMBATENV", AMPVP_SettingsUI, "TOPRIGHT", -150, -475, "In combat")
+AMPVP_CreateCheckbox("DISABLE_IN_PVPENV", AMPVP_SettingsUI, "TOPRIGHT", -150, -500, "In arenas/battlegrounds")
 AMPVP_CreateButton("TogglePVPSettingsUI", AMPVP_SettingsUI, "BOTTOM", 0, 20, 200, 20, "Arena/Battleground Settings")
 
 local function AMPVP_UpdateSettingsUIBoxes()
