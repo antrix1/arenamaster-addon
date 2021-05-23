@@ -606,7 +606,7 @@ function AMPVP_AddTooltipFrameText(userName)
 			end
 			if crrbg and not rbgdisplayed and (AMPVP_GetSettingValue("CURR_RATING_RBG") and not inInstance or (AMPVP_GetSettingValue("INST_CURR_RATING_RBG") and inInstance)) then
 				nrLines = nrLines + 1
-				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("RGB","white").."-"..AMPVP_RatingColorManager(crrbg)
+				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("RBG","white").."-"..AMPVP_RatingColorManager(crrbg)
 				rbgdisplayed = true
 				currentRatingInit = true
 			end
