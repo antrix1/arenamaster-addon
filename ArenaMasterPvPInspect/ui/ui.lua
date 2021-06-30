@@ -79,7 +79,7 @@ DropDownList1:HookScript("OnShow", function(self, ...)
 	if self.dropdown ~= nil and self.dropdown.clubMemberInfo ~= nil then return end
 
 	for k, v in pairs(self.dropdown) do
-		if self.dropdown.menuList ~= nil then
+		if self.dropdown.menuList ~= nil and type(self.dropdown.menuList) == "table" then
 			for k,v in pairs(self.dropdown.menuList) do
 				for a, b in pairs(v) do
 					if a == "arg1" then
