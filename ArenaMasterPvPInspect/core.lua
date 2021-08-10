@@ -557,6 +557,7 @@ function AMPVP_AddTooltipFrameText(userName)
 		nrLines = nrLines + 1
 		AMPVP_friendsTTlines[nrLines] = "|cffc72429ArenaMaster.IO PvP Info: |r"
 
+		--current rating
 		local cr2s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
 		local cr3s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c3v3Short)
 		local crrbg = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.RBGShort)
@@ -591,8 +592,8 @@ function AMPVP_AddTooltipFrameText(userName)
 		local versatility = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.versatilityShort)
 		local health = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.healthShort)
 		local renownLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.renownLevelShort)
-		local covenant = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.covenantShort)
-		local lastUpdated = AMPVP_GetValue(regionDB[userName], entryKeys.lastUpdateShort)
+		local covenant = tableCovenants[tonumber(AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.covenantShort))]
+		local lastUpdated = AMPVP_ConvertDateToStandardEU(AMPVP_GetValue(regionDB[userName], entryKeys.lastUpdateShort))
 
 		--init vars to avoid multiplcation of lines & avoid padding multiple times when entire sections are disabled
 		local currentRatingInit = false
