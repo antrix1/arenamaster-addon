@@ -23,6 +23,14 @@ local entryKeys = {
 	covenantShort = "co",
 }
 
+tableCovenants = {
+	[1] = "Necrolord",
+	[2] = "Night Fae",
+	[3] = "Venthyr",
+	[4] = "Kyrian",
+	[0] = "None",
+}
+
 local russianRealmsEng = {
 	["Азурегос"] = "Azuregos",
 	["Голдринн"] = "Goldrinn",
@@ -177,8 +185,8 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		local versatility = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.versatilityShort)
 		local health = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.healthShort)
 		local renownLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.renownLevelShort)
-		local covenant = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.covenantShort)
-		local lastUpdated = AMPVP_GetValue(regionDB[userName], entryKeys.lastUpdateShort)
+		local covenant = tableCovenants[tonumber(AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.covenantShort))]
+		local lastUpdated = AMPVP_ConvertDateToStandardEU(AMPVP_GetValue(regionDB[userName], entryKeys.lastUpdateShort))
 
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine("|cffc72429ArenaMaster.IO PvP Info: |r")

@@ -156,8 +156,46 @@ AMPVP_AchievementsAndTitlesList = {
 	[111] = "Elite: Shadowlands Season 1",
 	[112] = "Gladiator: Shadowlands Season 1",
 	[113] = "Sinful Gladiator: Shadowlands Season 1",
-	[114] = "Elite: Battle for Azeroth Season 4"
+	[114] = "Elite: Battle for Azeroth Season 4",
+	[115] = "Combatant: Shadowlands Season 2",
+	[116] = "Challenger: Shadowlands Season 2",
+	[117] = "Rival: Shadowlands Season 2",
+	[118] = "Duelist: Shadowlands Season 2",
+	[119] = "Elite: Shadowlands Season 2",
+	[120] = "Gladiator: Shadowlands Season 2",
+	[121] = "Unchained Gladiator: Shadowlands Season 2",
 }
+
+function AMPVP_ConvertDateToStandardEU(datet)
+
+	if datet == nil then return "No date available" end
+	
+	local tableMonths = {
+		[1] = "January",
+		[2] = "February",
+		[3] = "March",
+		[4] = "April",
+		[5] = "May",
+		[6] = "June",
+		[7] = "July",
+		[8] = "August",
+		[9] = "September",
+		[10] = "October",
+		[11] = "November",
+		[12] = "December",
+	}
+	
+	local day, month, year = string.split("/", datet)
+	
+	if day and month and year then
+		month = tableMonths[tonumber(month)]
+		year = "20"..year
+	end
+	
+	local tempDate = day .." ".. month .." ".. year
+	return tempDate
+	
+end
 
 if (UIDROPDOWNMENU_VALUE_PATCH_VERSION or 0) < 2 then
 	UIDROPDOWNMENU_VALUE_PATCH_VERSION = 2
