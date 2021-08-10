@@ -1,6 +1,36 @@
 local region = GetCurrentRegion()
 AMPVP_DebugMode = false
 
+local entryKeys = {
+	dbSeparator = ".",
+	currentRatingShort = "cr",
+	currentSeasonShort = "cs",
+	titlesShot = "t",
+	c2v2Short = "2",
+	c3v3Short = "3",
+	RBGShort = "r",
+	characterExpShort = "ex",
+	winrateShort = "wr",
+	gamesPlayedShort = "p",
+	accountRaingShort = "a",
+	statsShort = "s",
+	lastUpdateShort = "ua",
+	achievementsShort = "a",
+	itemLevelShort = "il",
+	versatilityShort = "ve",
+	healthShort = "hp",
+	renownLevelShort = "re",
+	covenantShort = "co",
+}
+
+local tableCovenants = {
+	[1] = "Necrolord",
+	[2] = "Night Fae",
+	[3] = "Venthyr",
+	[4] = "Kyrian",
+	[0] = "None",
+}
+
 local russianRealmsEng = {
 	["Азурегос"] = "Azuregos",
 	["Голдринн"] = "Goldrinn",
@@ -121,42 +151,42 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 
 	if regionDB[userName] ~= nil and GameTooltip.ampvpHooked == nil then
 		--current rating
-		local cr2s = AMPVP_GetValue(regionDB[userName], "cr.2v2")
-		local cr3s = AMPVP_GetValue(regionDB[userName], "cr.3v3")
-		local crrbg = AMPVP_GetValue(regionDB[userName], "cr.rbg")
+		local cr2s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
+		local cr3s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c3v3Short)
+		local crrbg = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.RBGShort)
 
 		--current season
-		local cseason_2srating = AMPVP_GetValue(regionDB[userName], "current_season.2v2.played")
-		local cseason_2swinp = AMPVP_GetValue(regionDB[userName], "current_season.2v2.win_rate")
+		local cseason_2srating = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.c2v2Short..entryKeys.dbSeparator..entryKeys.gamesPlayedShort)
+		local cseason_2swinp = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.c2v2Short..entryKeys.dbSeparator..entryKeys.winrateShort)
 
-		local cseason_3srating = AMPVP_GetValue(regionDB[userName], "current_season.3v3.played")
-		local cseason_3swinp = AMPVP_GetValue(regionDB[userName], "current_season.3v3.win_rate")
+		local cseason_3srating = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.c3v3Short..entryKeys.dbSeparator..entryKeys.gamesPlayedShort)
+		local cseason_3swinp = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.c3v3Short..entryKeys.dbSeparator..entryKeys.winrateShort)
 
-		local cseason_rbgsrating = AMPVP_GetValue(regionDB[userName], "current_season.rbg.played")
-		local cseason_rbgswinp = AMPVP_GetValue(regionDB[userName], "current_season.rbg.win_rate")
+		local cseason_rbgsrating = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.RBGShort..entryKeys.dbSeparator..entryKeys.gamesPlayedShort)
+		local cseason_rbgswinp = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.RBGShort..entryKeys.dbSeparator..entryKeys.winrateShort)
 
-		local cseason_titles = AMPVP_GetValue(regionDB[userName], "current_season.titles", true)
+		local cseason_titles = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.titlesShot, true)
 
 		--character exp
-		local exp2s = AMPVP_GetValue(regionDB[userName], "exp.2v2")
-		local exp3s = AMPVP_GetValue(regionDB[userName], "exp.3v3")
-		local exprbg = AMPVP_GetValue(regionDB[userName], "exp.rbg")
+		local exp2s = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
+		local exp3s = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.c3v3Short)
+		local exprbg = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.RBGShort)
 
 		--account achievements
-		local acc_achievements = AMPVP_GetValue(regionDB[userName], "achievements", true)
+		local acc_achievements = AMPVP_GetValue(regionDB[userName], entryKeys.achievementsShort, true)
 
 		--highest account rating
-		local acc2s = AMPVP_GetValue(regionDB[userName], "acc2s")
-		local acc3s = AMPVP_GetValue(regionDB[userName], "acc3s")
-		local accrbg = AMPVP_GetValue(regionDB[userName], "accRBG")
+		local acc2s = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.c2v2Short)
+		local acc3s = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.c3v3Short)
+		local accrbg = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.RBGShort)
 
 		--character stats
-		local itemLevel = AMPVP_GetValue(regionDB[userName], "stats.ilvl")
-		local versatility = AMPVP_GetValue(regionDB[userName], "stats.versa")
-		local health = AMPVP_GetValue(regionDB[userName], "stats.hp")
-		local renownLevel = AMPVP_GetValue(regionDB[userName], "stats.renown")
-		local covenant = AMPVP_GetValue(regionDB[userName], "stats.covenant")
-		local lastUpdated = AMPVP_GetValue(regionDB[userName], "updated_at")
+		local itemLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.itemLevelShort)
+		local versatility = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.versatilityShort)
+		local health = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.healthShort)
+		local renownLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.renownLevelShort)
+		local covenant = tableCovenants[tonumber(AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.covenantShort))]
+		local lastUpdated = AMPVP_ConvertDateToStandardEU(AMPVP_GetValue(regionDB[userName], entryKeys.lastUpdateShort))
 
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine("|cffc72429ArenaMaster.IO PvP Info: |r")
@@ -346,7 +376,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				local multipleTitles = false
 				local titlesLine = {}
 				for s in cseason_titles:gmatch("[^\r\n]+") do
-					table.insert(titlesLine, s)
+					table.insert(titlesLine, AMPVP_AchievementsAndTitlesList[tonumber(s)])
 				end
 
 				if #titlesLine > 2 then
@@ -377,28 +407,28 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			local displayed = false
 			if not displayed and (AMPVP_GetSettingValue("ACHI_SHOW") and not inInstance or (AMPVP_GetSettingValue("INST_ACHI_SHOW") and inInstance)) then
 
-				local multipleTitles = false
-				local titlesLine = {}
+				local multipleAchievs = false
+				local achievementsLines = {}
 				for s in acc_achievements:gmatch("[^\r\n]+") do
-					table.insert(titlesLine, s)
+					table.insert(achievementsLines, AMPVP_AchievementsAndTitlesList[tonumber(s)])
 				end
 
-				if #titlesLine > 2 then
-					multipleTitles = true
+				if #achievementsLines > 2 then
+					multipleAchievs = true
 				end
 
-				if not multipleTitles then
+				if not multipleAchievs then
 					if currentRatingInit or currentSeasonInit or characterExpInit then
 						GameTooltip:AddLine(" ")
 					end
-					GameTooltip:AddLine("Achievement: "..AMPVP_ColorSub(titlesLine[1], "white"));
+					GameTooltip:AddLine("Achievement: "..AMPVP_ColorSub(achievementsLines[1], "white"));
 					achievementsInit = true
 				else
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit then
 						GameTooltip:AddLine(" ")
 					end
 					GameTooltip:AddLine("Achievements:")
-					for k, v in pairs(titlesLine) do
+					for k, v in pairs(achievementsLines) do
 						GameTooltip:AddLine("-"..AMPVP_ColorSub(v, "white"))
 					end
 					achievementsInit = true
@@ -527,42 +557,43 @@ function AMPVP_AddTooltipFrameText(userName)
 		nrLines = nrLines + 1
 		AMPVP_friendsTTlines[nrLines] = "|cffc72429ArenaMaster.IO PvP Info: |r"
 
-		local cr2s = AMPVP_GetValue(regionDB[userName], "cr.2v2")
-		local cr3s = AMPVP_GetValue(regionDB[userName], "cr.3v3")
-		local crrbg = AMPVP_GetValue(regionDB[userName], "cr.rbg")
+		--current rating
+		local cr2s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
+		local cr3s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c3v3Short)
+		local crrbg = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.RBGShort)
 
 		--current season
-		local cseason_2srating = AMPVP_GetValue(regionDB[userName], "current_season.2v2.played")
-		local cseason_2swinp = AMPVP_GetValue(regionDB[userName], "current_season.2v2.win_rate")
+		local cseason_2srating = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.c2v2Short..entryKeys.dbSeparator..entryKeys.gamesPlayedShort)
+		local cseason_2swinp = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.c2v2Short..entryKeys.dbSeparator..entryKeys.winrateShort)
 
-		local cseason_3srating = AMPVP_GetValue(regionDB[userName], "current_season.3v3.played")
-		local cseason_3swinp = AMPVP_GetValue(regionDB[userName], "current_season.3v3.win_rate")
+		local cseason_3srating = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.c3v3Short..entryKeys.dbSeparator..entryKeys.gamesPlayedShort)
+		local cseason_3swinp = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.c3v3Short..entryKeys.dbSeparator..entryKeys.winrateShort)
 
-		local cseason_rbgsrating = AMPVP_GetValue(regionDB[userName], "current_season.rbg.played")
-		local cseason_rbgswinp = AMPVP_GetValue(regionDB[userName], "current_season.rbg.win_rate")
+		local cseason_rbgsrating = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.RBGShort..entryKeys.dbSeparator..entryKeys.gamesPlayedShort)
+		local cseason_rbgswinp = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.RBGShort..entryKeys.dbSeparator..entryKeys.winrateShort)
 
-		local cseason_titles = AMPVP_GetValue(regionDB[userName], "current_season.titles", true)
+		local cseason_titles = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.titlesShot, true)
 
 		--character exp
-		local exp2s = AMPVP_GetValue(regionDB[userName], "exp.2v2")
-		local exp3s = AMPVP_GetValue(regionDB[userName], "exp.3v3")
-		local exprbg = AMPVP_GetValue(regionDB[userName], "exp.rbg")
+		local exp2s = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
+		local exp3s = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.c3v3Short)
+		local exprbg = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.RBGShort)
 
 		--account achievements
-		local acc_achievements = AMPVP_GetValue(regionDB[userName], "achievements", true)
+		local acc_achievements = AMPVP_GetValue(regionDB[userName], entryKeys.achievementsShort, true)
 
 		--highest account rating
-		local acc2s = AMPVP_GetValue(regionDB[userName], "acc2s")
-		local acc3s = AMPVP_GetValue(regionDB[userName], "acc3s")
-		local accrbg = AMPVP_GetValue(regionDB[userName], "accRBG")
+		local acc2s = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.c2v2Short)
+		local acc3s = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.c3v3Short)
+		local accrbg = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.RBGShort)
 
 		--character stats
-		local itemLevel = AMPVP_GetValue(regionDB[userName], "stats.ilvl")
-		local versatility = AMPVP_GetValue(regionDB[userName], "stats.versa")
-		local health = AMPVP_GetValue(regionDB[userName], "stats.hp")
-		local renownLevel = AMPVP_GetValue(regionDB[userName], "stats.renown")
-		local covenant = AMPVP_GetValue(regionDB[userName], "stats.covenant")
-		local lastUpdated = AMPVP_GetValue(regionDB[userName], "updated_at")
+		local itemLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.itemLevelShort)
+		local versatility = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.versatilityShort)
+		local health = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.healthShort)
+		local renownLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.renownLevelShort)
+		local covenant = tableCovenants[tonumber(AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.covenantShort))]
+		local lastUpdated = AMPVP_ConvertDateToStandardEU(AMPVP_GetValue(regionDB[userName], entryKeys.lastUpdateShort))
 
 		--init vars to avoid multiplcation of lines & avoid padding multiple times when entire sections are disabled
 		local currentRatingInit = false
@@ -772,7 +803,7 @@ function AMPVP_AddTooltipFrameText(userName)
 				local multipleTitles = false
 				local titlesLine = {}
 				for s in cseason_titles:gmatch("[^\r\n]+") do
-					table.insert(titlesLine, s)
+					table.insert(titlesLine, AMPVP_AchievementsAndTitlesList[tonumber(s)])
 				end
 
 				if #titlesLine > 2 then
@@ -813,7 +844,7 @@ function AMPVP_AddTooltipFrameText(userName)
 				local multipleAchievements = false
 				local achievsLines = {}
 				for s in acc_achievements:gmatch("[^\r\n]+") do
-					table.insert(achievsLines, s)
+					table.insert(achievsLines, AMPVP_AchievementsAndTitlesList[tonumber(s)])
 				end
 
 				if #achievsLines > 2 then
