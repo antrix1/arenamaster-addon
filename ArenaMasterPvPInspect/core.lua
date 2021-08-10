@@ -23,7 +23,7 @@ local entryKeys = {
 	covenantShort = "co",
 }
 
-tableCovenants = {
+local tableCovenants = {
 	[1] = "Necrolord",
 	[2] = "Night Fae",
 	[3] = "Venthyr",
