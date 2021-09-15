@@ -1,5 +1,6 @@
 local region = GetCurrentRegion()
 AMPVP_DebugMode = false
+local patreonTooltipSpacing = 14
 
 local entryKeys = {
 	dbSeparator = ".",
@@ -21,6 +22,7 @@ local entryKeys = {
 	healthShort = "hp",
 	renownLevelShort = "re",
 	covenantShort = "co",
+	patreon = "p",
 }
 
 local tableCovenants = {
@@ -189,8 +191,24 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		local lastUpdated = AMPVP_ConvertDateToStandardEU(AMPVP_GetValue(regionDB[userName], entryKeys.lastUpdateShort))
 
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine("|cffc72429ArenaMaster.IO PvP Info: |r")
-
+		local spacesTitle = " "
+		for i=1, patreonTooltipSpacing - 5 do
+			spacesTitle = spacesTitle .. " "
+		end
+		GameTooltip:AddLine(spacesTitle.."|cffc72429ArenaMaster.IO PvP Info: |r")
+		
+		local patreonSupporter = AMPVP_GetValue(regionDB[userName], entryKeys.patreon)
+		
+		if patreonSupporter then
+			local spaces = " "
+			for i=1, patreonTooltipSpacing do
+				spaces = spaces .. " "
+			end
+			GameTooltip:AddLine(" ")
+			GameTooltip:AddLine("|cfff0ce56" .. spaces .. "Patreon Supporter|r")
+			GameTooltip:AddLine(spaces.."**************")
+		end
+		
 		--init vars to avoid multiplcation of lines & avoid padding multiple times when entire sections are disabled
 		local currentRatingInit = false
 		local currentSeasonInit = false
@@ -388,14 +406,14 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 						GameTooltip:AddLine(" ")
 					end
 					GameTooltip:AddLine("Current Season Title:");
-					GameTooltip:AddLine(AMPVP_ColorSub(titlesLine[1], "white"))
+					GameTooltip:AddLine(AMPVP_ConvertRankAchievement(titlesLine[1]))
 				else
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit then
 						GameTooltip:AddLine(" ")
 					end
 					GameTooltip:AddLine("Current Expansion Titles:")
 					for k, v in pairs(titlesLine) do
-						GameTooltip:AddLine("-"..AMPVP_ColorSub(v, "white"))
+						GameTooltip:AddLine("-"..AMPVP_ConvertRankAchievement(v))
 					end
 
 				end
@@ -421,7 +439,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 					if currentRatingInit or currentSeasonInit or characterExpInit then
 						GameTooltip:AddLine(" ")
 					end
-					GameTooltip:AddLine("Achievement: "..AMPVP_ColorSub(achievementsLines[1], "white"));
+					GameTooltip:AddLine("Achievement: "..AMPVP_ConvertRankAchievement(achievementsLines[1]));
 					achievementsInit = true
 				else
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit then
@@ -429,7 +447,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 					end
 					GameTooltip:AddLine("Achievements:")
 					for k, v in pairs(achievementsLines) do
-						GameTooltip:AddLine("-"..AMPVP_ColorSub(v, "white"))
+						GameTooltip:AddLine("-"..AMPVP_ConvertRankAchievement(v))
 					end
 					achievementsInit = true
 				end
@@ -555,8 +573,27 @@ function AMPVP_AddTooltipFrameText(userName)
 		nrLines = 0
 
 		nrLines = nrLines + 1
-		AMPVP_friendsTTlines[nrLines] = "|cffc72429ArenaMaster.IO PvP Info: |r"
-
+		local spacesTitle = " "
+		for i=1, patreonTooltipSpacing - 7 do
+			spacesTitle = spacesTitle .. " "
+		end
+		AMPVP_friendsTTlines[nrLines] = spacesTitle.."|cffc72429ArenaMaster.IO PvP Info: |r"
+		
+		local patreonSupporter = AMPVP_GetValue(regionDB[userName], entryKeys.patreon)
+		
+		if patreonSupporter then
+			local spaces = " "
+			for i=1, patreonTooltipSpacing - 5 do
+				spaces = spaces .. " "
+			end
+			nrLines = nrLines + 1
+			AMPVP_friendsTTlines[nrLines] = " "
+			nrLines = nrLines + 1
+			AMPVP_friendsTTlines[nrLines] = spaces .. "|cfff0ce56Patreon Supporter|r"
+			nrLines = nrLines + 1
+			AMPVP_friendsTTlines[nrLines] = spaces .. "**************"
+		end
+		
 		--current rating
 		local cr2s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
 		local cr3s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c3v3Short)
@@ -818,7 +855,7 @@ function AMPVP_AddTooltipFrameText(userName)
 					nrLines = nrLines + 1
 					AMPVP_friendsTTlines[nrLines] = "Current Season Title:";
 					nrLines = nrLines + 1
-					AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub(titlesLine[1], "white")
+					AMPVP_friendsTTlines[nrLines] = AMPVP_ConvertRankAchievement(titlesLine[1])
 					displayed = true
 				else
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit then
@@ -829,7 +866,7 @@ function AMPVP_AddTooltipFrameText(userName)
 					AMPVP_friendsTTlines[nrLines] = "Current Expansion Titles:"
 					for k, v in pairs(titlesLine) do
 						nrLines = nrLines + 1
-						AMPVP_friendsTTlines[nrLines] = "*"..AMPVP_ColorSub(v, "white")
+						AMPVP_friendsTTlines[nrLines] = "*"..AMPVP_ConvertRankAchievement(v)
 					end
 					displayed = true
 				end
@@ -857,7 +894,7 @@ function AMPVP_AddTooltipFrameText(userName)
 						AMPVP_friendsTTlines[nrLines] = ""
 					end
 					nrLines = nrLines + 1
-					AMPVP_friendsTTlines[nrLines] = "Achievement: "..AMPVP_ColorSub(achievsLines[1], "white")
+					AMPVP_friendsTTlines[nrLines] = "Achievement: "..AMPVP_ConvertRankAchievement(achievsLines[1])
 					achievementsInit = true
 					displayed = true
 				else
@@ -869,7 +906,7 @@ function AMPVP_AddTooltipFrameText(userName)
 					AMPVP_friendsTTlines[nrLines] = "Achievements:"
 					for k, v in pairs(achievsLines) do
 						nrLines = nrLines + 1
-						AMPVP_friendsTTlines[nrLines] = "*"..AMPVP_ColorSub(v, "white")
+						AMPVP_friendsTTlines[nrLines] = "*"..AMPVP_ConvertRankAchievement(v)
 					end
 					achievementsInit = true
 					displayed = true
