@@ -43,6 +43,25 @@ if (UIDROPDOWNMENU_OPEN_PATCH_VERSION or 0) < 1 then
 	end)
 end
 
+local bracketsColors = { 
+	["gladiator"] = "|cfff1c40f",
+	["hero"] = "|cfff1c40f",
+	["elite"] = "|cffa335ee",
+	["duelist"] = "|cff0070dd",
+	["rival"] = "|cff27ae60",
+	["challenger"] = "|cffffffff",
+	["combatant"] = "|cff9d9d9d",
+	["none"] = "|cffffffff"
+}
+
+local ranksColors = {
+	[2700] = "|cffff8000",
+	[2400] = "|cffa335ee",
+	[2100] = "|cff0070dd",
+	[1750] = "|cff27ae60",
+	[1749] = "|cffffffff",
+}
+
 AMPVP_AchievementsAndTitlesList = {
 	[1] = "Duelist",
 	[2] = "Rival",
@@ -165,6 +184,70 @@ AMPVP_AchievementsAndTitlesList = {
 	[120] = "Gladiator: Shadowlands Season 2",
 	[121] = "Unchained Gladiator: Shadowlands Season 2",
 }
+
+function AMPVP_ConvertStringToTable(str, character)
+  local result = {}
+  local index = 1
+  
+  for s in string.gmatch(str, "[^"..character.."]+") do
+    result[index] = s
+    index = index + 1
+  end
+
+  return result
+end
+
+function AMPVP_ConvertRankAchievement(rankName)
+	
+	local newTitleName = "";
+	
+	for rankIndex, name in pairs(AMPVP_AchievementsAndTitlesList) do
+	
+		if name == rankName then
+			for bracketName, bracketColor in pairs(bracketsColors) do
+				if string.find(string.lower(rankName), bracketName) then
+					newTitleName = bracketsColors[bracketName] .. rankName .. "|r"
+				end
+			end
+		end
+	
+	end
+	
+	if newTitleName == "" then
+	
+		local tempTable = AMPVP_ConvertStringToTable(rankName, " ")
+		local rankPoints = nil
+		
+		for k, v in pairs(tempTable) do
+			if tonumber(tempTable[k]) ~= nil then
+				rankPoints = tonumber(v)
+			end
+		end
+		
+		if rankPoints ~= nil then
+
+			if rankPoints >= 2700 then
+				newTitleName = ranksColors[2700]..rankName.."|r"
+			elseif rankPoints >= 2400 then
+				newTitleName = ranksColors[2400]..rankName.."|r"
+			elseif rankPoints >= 2100 then
+				newTitleName = ranksColors[2100]..rankName.."|r"
+			elseif rankPoints >= 1750 then
+				newTitleName = ranksColors[1750]..rankName.."|r"
+			elseif rankPoints < 1750 then
+				newTitleName = ranksColors[1749]..rankName.."|r"
+			end
+
+		end
+		
+		if newTitleName == "" then
+			newTitleName = brackets["none"] .. rankName .. "|r"
+		end
+	end
+	
+	return newTitleName
+	
+end
 
 function AMPVP_ConvertDateToStandardEU(datet)
 
@@ -520,15 +603,15 @@ function AMPVP_RatingColorManager(points)
 	local finalPoints = ""
 
 	if points >= 2700 then
-		finalPoints = '|cffff8000'..points.."|r"
+		finalPoints = ranksColors[2700]..points.."|r"
 	elseif points >= 2400 then
-		finalPoints = '|cffa335ee'..points.."|r"
+		finalPoints = ranksColors[2400]..points.."|r"
 	elseif points >= 2100 then
-		finalPoints = '|cff0070dd'..points.."|r"
+		finalPoints = ranksColors[2100]..points.."|r"
 	elseif points >= 1750 then
-		finalPoints = '|cff27ae60'..points.."|r"
+		finalPoints = ranksColors[1750]..points.."|r"
 	elseif points < 1750 then
-		finalPoints = '|cffffffff'..points.."|r"
+		finalPoints = ranksColors[1749]..points.."|r"
 	end
 
 	return finalPoints
