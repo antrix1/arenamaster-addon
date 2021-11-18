@@ -76,7 +76,8 @@ end
 if region == 1 then
 	local loaded, rsn = LoadAddOn("ArenaMaster_DB_US")
 	if loaded then
-		AMPVP_REGIONDATA = AMPVP_REGIONDATA_US
+		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_US_HORDE
+		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_US_ALLIANCE
 		AMPVP_Print("Current region: US", "green")
 	else
 		AMPVP_Print("Regional data does not exist. Make sure you have the latest version of the AddOn running.", "red")
@@ -84,7 +85,8 @@ if region == 1 then
 elseif region == 2 then
 	local loaded, rsn = LoadAddOn("ArenaMaster_DB_KR")
 	if loaded then
-		AMPVP_REGIONDATA = AMPVP_REGIONDATA_KR
+		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_KR_HORDE
+		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_KR_ALLIANCE
 		AMPVP_Print("Current region: KR", "green")
 	else
 		AMPVP_Print("Regional data does not exist. Make sure you have the latest version of the AddOn running.", "red")
@@ -92,7 +94,8 @@ elseif region == 2 then
 elseif region == 3 then
 	local loaded, rsn = LoadAddOn("ArenaMaster_DB_EU")
 	if loaded then
-		AMPVP_REGIONDATA = AMPVP_REGIONDATA_EU
+		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_EU_HORDE
+		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_EU_ALLIANCE
 		AMPVP_Print("Current region: EU", "green")
 	else
 		AMPVP_Print("Regional data does not exist. Make sure you have the latest version of the AddOn running.", "red")
@@ -100,7 +103,8 @@ elseif region == 3 then
 elseif region == 4 then
 	local loaded, rsn = LoadAddOn("ArenaMaster_DB_TW")
 	if loaded then
-		AMPVP_REGIONDATA = AMPVP_REGIONDATA_TW
+		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_TW_HORDE
+		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_TW_ALLIANCE
 		AMPVP_Print("Current region: TW", "green")
 	else
 		AMPVP_Print("Regional data does not exist. Make sure you have the latest version of the AddOn running.", "red")
@@ -108,19 +112,23 @@ elseif region == 4 then
 elseif region == 5 then
 	local loaded, rsn = LoadAddOn("ArenaMaster_DB_CH")
 	if loaded then
-		AMPVP_REGIONDATA = AMPVP_REGIONDATA_CH
+		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_CH_HORDE
+		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_CH_ALLIANCE
 		AMPVP_Print("Current region: CH", "green")
 	else
 		AMPVP_Print("Regional data does not exist. Make sure you have the latest version of the AddOn running.", "red")
 	end
 else
 	AMPVP_Print("The data in your region is unavailable.", "red")
-	AMPVP_REGIONDATA = {}
+	AMPVP_REGIONDATA_ALLIANCE = {}
+	AMPVP_REGIONDATA_HORDE = {}
 end
 
 function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor)
 
-	local regionDB = AMPVP_REGIONDATA
+	local regionDB1 = AMPVP_REGIONDATA_HORDE
+	local regionDB2 = AMPVP_REGIONDATA_ALLIANCE
+	local regionDB = regionDB1
 	local origOwner = GameTooltip:GetOwner()
 	local inInstance, instanceType = IsInInstance()
 	local inCombatDisable = InCombatLockdown() and AMPVP_GetSettingValue("DISABLE_IN_COMBATENV")
@@ -150,7 +158,11 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			userName = tempUserName.."-"..d
 		end
 	end
-
+	
+	if not regionDB[userName] then
+		regionDB = regionDB2
+	end
+	
 	if regionDB[userName] ~= nil and GameTooltip.ampvpHooked == nil then
 		--current rating
 		local cr2s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
@@ -397,7 +409,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 					table.insert(titlesLine, AMPVP_AchievementsAndTitlesList[tonumber(s)])
 				end
 
-				if #titlesLine > 2 then
+				if #titlesLine > 1 then
 					multipleTitles = true
 				end
 
@@ -545,7 +557,9 @@ end
 
 function AMPVP_AddTooltipFrameText(userName)
 
-	local regionDB = AMPVP_REGIONDATA
+	local regionDB1 = AMPVP_REGIONDATA_HORDE
+	local regionDB2 = AMPVP_REGIONDATA_ALLIANCE
+	local regionDB = regionDB1
 
 	userName = string.gsub(userName, " ", "")
 
@@ -565,6 +579,11 @@ function AMPVP_AddTooltipFrameText(userName)
 			userName = tempUserName.."-"..d
 		end
 	end
+	
+	if not regionDB[userName] then
+		regionDB = regionDB2
+	end
+	
 	wipe(AMPVP_friendsTTlines)
 	AMPVP_friendsTTlines["nrLines"] = 0
 	local nrLines = AMPVP_friendsTTlines["nrLines"]
@@ -843,7 +862,7 @@ function AMPVP_AddTooltipFrameText(userName)
 					table.insert(titlesLine, AMPVP_AchievementsAndTitlesList[tonumber(s)])
 				end
 
-				if #titlesLine > 2 then
+				if #titlesLine > 1 then
 					multipleTitles = true
 				end
 
@@ -884,7 +903,7 @@ function AMPVP_AddTooltipFrameText(userName)
 					table.insert(achievsLines, AMPVP_AchievementsAndTitlesList[tonumber(s)])
 				end
 
-				if #achievsLines > 2 then
+				if #achievsLines > 1 then
 					multipleAchievements = true
 				end
 
