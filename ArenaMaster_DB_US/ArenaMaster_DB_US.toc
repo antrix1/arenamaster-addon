@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: ArenaMaster US Database
 ## Author: Antrix, Sadolock / Creepz
 ## Version: 1.0
@@ -7,4 +7,5 @@
 ## DefaultState: enabled
 ## LoadOnDemand: 1
 
-../ArenaMasterPVPInspect/regionalData/US.lua
+../ArenaMasterPVPInspect/regionalData/US_HORDE.lua
+../ArenaMasterPVPInspect/regionalData/US_ALLIANCE.lua
