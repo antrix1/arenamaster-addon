@@ -198,7 +198,9 @@ function AMPVP_ConvertStringToTable(str, character)
 end
 
 function AMPVP_ConvertRankAchievement(rankName)
-	
+	if rankName == nil then
+		return ""
+	end
 	local newTitleName = "";
 	
 	for rankIndex, name in pairs(AMPVP_AchievementsAndTitlesList) do
