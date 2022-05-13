@@ -411,15 +411,19 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 
 				if #titlesLine > 1 then
 					multipleTitles = true
+				elseif #titlesLine == 0 then
+					multipleTitles = nil
+				elseif #titlesLine == 1 then
+					multipleTitles = false
 				end
 
-				if not multipleTitles then
+				if multipleTitles ~= nil and multipleTitles == false then
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit then
 						GameTooltip:AddLine(" ")
 					end
 					GameTooltip:AddLine("Current Season Title:");
 					GameTooltip:AddLine(AMPVP_ConvertRankAchievement(titlesLine[1]))
-				else
+				elseif multipleTitles ~= nil and multipleTitles then
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit then
 						GameTooltip:AddLine(" ")
 					end
