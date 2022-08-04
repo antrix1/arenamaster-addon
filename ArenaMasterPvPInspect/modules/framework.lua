@@ -183,6 +183,20 @@ AMPVP_AchievementsAndTitlesList = {
 	[119] = "Elite: Shadowlands Season 2",
 	[120] = "Gladiator: Shadowlands Season 2",
 	[121] = "Unchained Gladiator: Shadowlands Season 2",
+	[122] = "Challenger: Shadowlands Season 3",
+	[123] = "Combatant: Shadowlands Season 3",
+	[124] = "Rival: Shadowlands Season 3",
+	[125] = "Duelist: Shadowlands Season 3",
+	[126] = "Elite: Shadowlands Season 3",
+	[127] = "Gladiator: Shadowlands Season 3",
+	[128] = "Cosmic Gladiator: Shadowlands Season 3",
+	[129] = "Challenger: Shadowlands Season 4",
+	[130] = "Combatant: Shadowlands Season 4",
+	[131] = "Rival: Shadowlands Season 4",
+	[132] = "Duelist: Shadowlands Season 4",
+	[133] = "Elite: Shadowlands Season 4",
+	[134] = "Gladiator: Shadowlands Season 4",
+	[135] = "Eternal Gladiator: Shadowlands Season 4",
 }
 
 function AMPVP_ConvertStringToTable(str, character)
