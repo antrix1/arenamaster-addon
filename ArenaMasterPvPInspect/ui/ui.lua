@@ -31,25 +31,48 @@ local function AMPVPGetProfileLinkFunc(self, ...)
 		local currRegion = GetCurrentRegion()
 		local unitName = drop.name
 		local unitServer = drop.server
-
 		local name2, realm
 
-		if (unitName == nil and dropdownData.tempNameHooked ~= nil) or (unitName ~= nil and dropdownData.tempNameHooked ~= nil and unitServer == nil) then
+		if (drop.menuList ~= nil) then
+			drop = drop.menuList
+			local name2, realm
+			for k, v in pairs(drop) do
+				if name2 ~= nil then
+					break;
+				end
+				for a, b in pairs(v) do
+					if a == "arg1" then
+						name = b;
+						name2, realm = string.split("-", name)
+						if (realm == nil) then
+							realm = GetRealmName();
+						end
+						break;
+					end
+				end
+			end
+			if (name2 ~= nil) then
+				unitName = name2
+				unitServer = realm
+			end
+		
+		else
+			if (unitName == nil and dropdownData.tempNameHooked ~= nil) or (unitName ~= nil and dropdownData.tempNameHooked ~= nil and unitServer == nil) then
 
-			name2, realm = string.split("-", dropdownData.tempNameHooked)
-			unitName = name2
-			unitServer = realm
+				name2, realm = string.split("-", dropdownData.tempNameHooked)
+				unitName = name2
+				unitServer = realm
 
+			end
+
+			if unitServer == nil and drop.server ~= nil then
+				unitServer = drop.server
+			end
+
+			if unitServer == nil or unitServer == "" then
+				unitServer = GetRealmName();
+			end
 		end
-
-		if unitServer == nil and drop.server ~= nil then
-			unitServer = drop.server
-		end
-
-		if unitServer == nil or unitServer == "" then
-			unitServer = GetRealmName();
-		end
-
 		unitServer = AMPVP_FixSlangRealms(unitServer)
 
 		AMPVP_CopyCharNameFrame2InputFrameTitleText:SetText("https://arenamaster.io/"..regionsTable[currRegion].."/"..string.lower(unitServer).."/"..string.lower(unitName).."?ref=addon")
