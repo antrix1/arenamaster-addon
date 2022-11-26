@@ -27,9 +27,7 @@ AMPVP_CreateCheckbox("HIGHEST_ACC_RBG", AMPVP_SettingsUI, "TOPRIGHT", -150, -280
 AMPVP_CreateText("catCharacterStats", AMPVP_SettingsUI, "TOPLEFT", 25, -350, "Character Stats:")
 AMPVP_CreateCheckbox("STATS_ITEMLEVEL", AMPVP_SettingsUI, "TOPLEFT", 25, -365, "Display Item Level")
 AMPVP_CreateCheckbox("STATS_VERSATILITY", AMPVP_SettingsUI, "TOPLEFT", 25, -390, "Display Versatility")
-AMPVP_CreateCheckbox("STATS_COVENANT", AMPVP_SettingsUI, "TOPLEFT", 25, -415, "Display Covenant")
-AMPVP_CreateCheckbox("STATS_RENOWN", AMPVP_SettingsUI, "TOPLEFT", 25, -440, "Display Renown Level")
-AMPVP_CreateCheckbox("STATS_HEALTH", AMPVP_SettingsUI, "TOPLEFT", 25, -465, "Display Health")
+AMPVP_CreateCheckbox("STATS_HEALTH", AMPVP_SettingsUI, "TOPLEFT", 25, -415, "Display Health")
 --Achievements
 AMPVP_CreateText("catAchievements", AMPVP_SettingsUI, "TOPRIGHT", -90, -350, "Achievements:")
 AMPVP_CreateCheckbox("ACHI_SHOW", AMPVP_SettingsUI, "TOPRIGHT", -150, -365, "Display Achievements")
