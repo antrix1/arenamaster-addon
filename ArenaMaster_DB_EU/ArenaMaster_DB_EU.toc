@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100002
 ## Title: ArenaMaster EU Database
 ## Author: Antrix, Sadolock / Creepz
 ## Version: 1.0
