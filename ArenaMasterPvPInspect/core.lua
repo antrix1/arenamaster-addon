@@ -20,8 +20,6 @@ local entryKeys = {
 	itemLevelShort = "il",
 	versatilityShort = "ve",
 	healthShort = "hp",
-	renownLevelShort = "re",
-	covenantShort = "co",
 	patreon = "p",
 }
 
@@ -199,8 +197,6 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		local itemLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.itemLevelShort)
 		local versatility = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.versatilityShort)
 		local health = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.healthShort)
-		local renownLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.renownLevelShort)
-		local covenant = tableCovenants[tonumber(AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.covenantShort))]
 		local lastUpdated = AMPVP_ConvertDateToStandardEU(AMPVP_GetValue(regionDB[userName], entryKeys.lastUpdateShort))
 
 		GameTooltip:AddLine(" ")
@@ -483,9 +479,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 
 			if (itemLevel and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) or
 				health and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) or
-				covenant and(AMPVP_GetSettingValue("STATS_COVENANT") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) or
-				versatility and (AMPVP_GetSettingValue("STATS_VERSATILITY") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance)) or
-				renown and (AMPVP_GetSettingValue("STATS_RENOWN") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance))) then
+				versatility and (AMPVP_GetSettingValue("STATS_VERSATILITY") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit or achievementsInit then
 						GameTooltip:AddLine(" ")
@@ -510,19 +504,6 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				versaDisplayed = true
 				characterStatsInit = true
 			end
-
-			if covenant and not covenantDisplayed and (AMPVP_GetSettingValue("STATS_COVENANT") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) then
-				GameTooltip:AddDoubleLine(AMPVP_ColorSub("Covenant", "white"), covenant)
-				covenantDisplayed = true
-				characterStatsInit = true
-			end
-
-			if renownLevel and not renownDisplayed and (AMPVP_GetSettingValue("STATS_RENOWN") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance)) then
-				GameTooltip:AddDoubleLine(AMPVP_ColorSub("Renown", "white"), renownLevel)
-				renownDisplayed = true
-				characterStatsInit = true
-			end
-
 		end
 
 		if not lastUpdatedInit and lastUpdated and not shouldDisable then
@@ -652,8 +633,6 @@ function AMPVP_AddTooltipFrameText(userName)
 		local itemLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.itemLevelShort)
 		local versatility = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.versatilityShort)
 		local health = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.healthShort)
-		local renownLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.renownLevelShort)
-		local covenant = tableCovenants[tonumber(AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.covenantShort))]
 		local lastUpdated = AMPVP_ConvertDateToStandardEU(AMPVP_GetValue(regionDB[userName], entryKeys.lastUpdateShort))
 
 		--init vars to avoid multiplcation of lines & avoid padding multiple times when entire sections are disabled
@@ -949,9 +928,7 @@ function AMPVP_AddTooltipFrameText(userName)
 
 			if (itemLevel and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) or
 				health and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) or
-				covenant and(AMPVP_GetSettingValue("STATS_COVENANT") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) or
-				versatility and (AMPVP_GetSettingValue("STATS_VERSATILITY") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance)) or
-				renown and (AMPVP_GetSettingValue("STATS_RENOWN") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance))) then
+				versatility and (AMPVP_GetSettingValue("STATS_VERSATILITY") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_VERSATILITY") and inInstance))) then
 				if not titleDisplayed then
 					if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit or achievementsInit then
 						nrLines = nrLines + 1
@@ -981,21 +958,6 @@ function AMPVP_AddTooltipFrameText(userName)
 				versaDisplayed = true
 				characterStatsInit = true
 			end
-
-			if covenant and not covenantDisplayed and (AMPVP_GetSettingValue("STATS_COVENANT") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_COVENANT") and inInstance)) then
-				nrLines = nrLines + 1
-				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Covenant", "white").."-"..covenant
-				covenantDisplayed = true
-				characterStatsInit = true
-			end
-
-			if renownLevel and not renownDisplayed and (AMPVP_GetSettingValue("STATS_RENOWN") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_RENOWN") and inInstance)) then
-				nrLines = nrLines + 1
-				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Renown", "white").."-"..renownLevel
-				renownDisplayed = true
-				characterStatsInit = true
-			end
-
 		end
 
 		if not lastUpdatedInit and lastUpdated and not shouldDisable then
