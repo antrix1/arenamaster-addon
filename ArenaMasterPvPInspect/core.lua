@@ -124,7 +124,7 @@ else
 	AMPVP_REGIONDATA_HORDE = {}
 end
 
-function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor)
+function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor, xOffset, yOffset)
 
 	local regionDB1 = AMPVP_REGIONDATA_HORDE
 	local regionDB2 = AMPVP_REGIONDATA_ALLIANCE
@@ -140,7 +140,8 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 	if shouldDisable then return end
 
 	if frameOwner ~= nil then
-		GameTooltip:SetOwner(frameOwner, ownerAnchor)
+		GameTooltip:ClearAllPoints()
+		GameTooltip:SetOwner(origOwner, ownerAnchor, xOffset, yOffset)
 	end
 
 	userName = string.gsub(userName, " ", "")
