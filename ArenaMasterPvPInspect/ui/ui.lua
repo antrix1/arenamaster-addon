@@ -317,7 +317,10 @@ hooksecurefunc("LFGListSearchEntry_OnEnter", function(entry)
 
 end)
 
-GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
+
+
+
+local function tempHookGametooltip(self, ...)
 
 	GameTooltip.ampvpHooked = nil
 	local unitIncompleteName, unit = self:GetUnit()
@@ -342,7 +345,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
 		end
 	end
 
-end)
+end
+
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, tempHookGametooltip)
 
 hooksecurefunc(GameTooltip, "Hide", function(self)
 
