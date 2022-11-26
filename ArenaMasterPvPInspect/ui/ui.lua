@@ -318,8 +318,6 @@ hooksecurefunc("LFGListSearchEntry_OnEnter", function(entry)
 end)
 
 
-
-
 local function tempHookGametooltip(self, ...)
 
 	GameTooltip.ampvpHooked = nil
@@ -456,7 +454,7 @@ GameTooltip:HookScript("OnShow", function(self, ...)
 					AMPVP_AddTooltipDetails(name, false)
 				end, 1)
 			else
-				AMPVP_AddTooltipDetails(name, false)
+				AMPVP_AddTooltipDetails(name, false, PVEFrame, "ANCHOR_RIGHT", 100, 0)
 			end
 
 		end
