@@ -344,17 +344,12 @@ local function tempHookGametooltip(self, ...)
 	end
 
 end
-
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, tempHookGametooltip)
 
 hooksecurefunc(GameTooltip, "Hide", function(self)
 
 	if GameTooltip.ampvpHooked then
 		GameTooltip.ampvpHooked = nil
-	end
-
-	if GameTooltip.ampvpHooked2 then
-		GameTooltip.ampvpHooked2 = nil
 	end
 
 	if friendsTooltipShown then
@@ -500,7 +495,6 @@ end
 hooksecurefunc(FriendsTooltip, "Show", friedsListFunc2)
 
 FriendsTooltip:HookScript("OnHide", function(self, ...)
-
 	GameTooltip:Hide()
 	AMPVP_FriendsListTooltip.isAmPVPFromBnet = nil
 	AMPVP_FriendsListTooltip:Hide()
