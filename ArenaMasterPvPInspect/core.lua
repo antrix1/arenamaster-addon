@@ -142,8 +142,6 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		GameTooltip:SetOwner(origOwner, ownerAnchor, xOffset, yOffset)
 	end
 
-	GameTooltip.ampvpHooked = null
-
 	userName = string.gsub(userName, " ", "")
 
 	local tempUserName, tempRealm = string.split("-", userName)
