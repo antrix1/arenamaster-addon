@@ -142,6 +142,8 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		GameTooltip:SetOwner(origOwner, ownerAnchor, xOffset, yOffset)
 	end
 
+	GameTooltip.ampvpHooked = null
+
 	userName = string.gsub(userName, " ", "")
 
 	local tempUserName, tempRealm = string.split("-", userName)
@@ -162,6 +164,10 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		regionDB = regionDB2
 	end
 	
+	--[[if regionDB[userName] == nil then
+		regionDB[userName] = {["ex"]={["2"]=0,["3"]=1996,["r"]=2500},["cr"]={["2"]=0,["3"]=0,["r"]=0},["cs"]={["t"]={111},["2"]={["p"]=0,["wr"]=0},["3"]={["p"]=0,["wr"]=0},["r"]={["p"]=0,["wr"]=0}},["a"]={35,30,66,1},["s"]={["il"]=206,["co"]=2,["re"]=26,["hp"]=32,840,["ve"]=17.45},["ua"]="11/4/21"}
+	end]]--
+
 	if regionDB[userName] ~= nil and GameTooltip.ampvpHooked == nil then
 		--current rating
 		local cr2s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
@@ -474,8 +480,6 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			local healthDisplayed = false
 			local versaDisplayed = false
 			local itemLevelDisplayed = false
-			local covenantDisplayed = false
-			local renownDisplayed = false
 
 			if (itemLevel and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) or
 				health and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) or
@@ -520,9 +524,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 
 		end
 
-		if GameTooltip.ampvpHooked == nil then
-			GameTooltip.ampvpHooked = true
-		end
+		GameTooltip.ampvpHooked = true
 		GameTooltip:Show()
 
 	else
@@ -533,9 +535,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				GameTooltip:AddLine(" ")
 			end
 		end
-		if GameTooltip.ampvpHooked == nil then
-			GameTooltip.ampvpHooked = true
-		end
+		GameTooltip.ampvpHooked = true
 		GameTooltip:Show()
 	end
 end
@@ -923,8 +923,6 @@ function AMPVP_AddTooltipFrameText(userName)
 			local healthDisplayed = false
 			local versaDisplayed = false
 			local itemLevelDisplayed = false
-			local covenantDisplayed = false
-			local renownDisplayed = false
 
 			if (itemLevel and (AMPVP_GetSettingValue("STATS_ITEMLEVEL") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_ITEMLEVEL") and inInstance)) or
 				health and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) or
