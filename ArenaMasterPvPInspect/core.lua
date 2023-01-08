@@ -123,7 +123,7 @@ else
 end
 
 function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor, xOffset, yOffset)
-
+	GameTooltip.ampvpHooked = true
 	local regionDB1 = AMPVP_REGIONDATA_HORDE
 	local regionDB2 = AMPVP_REGIONDATA_ALLIANCE
 	local regionDB = regionDB1
@@ -166,7 +166,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		regionDB[userName] = {["ex"]={["2"]=0,["3"]=1996,["r"]=2500},["cr"]={["2"]=0,["3"]=0,["r"]=0},["cs"]={["t"]={111},["2"]={["p"]=0,["wr"]=0},["3"]={["p"]=0,["wr"]=0},["r"]={["p"]=0,["wr"]=0}},["a"]={35,30,66,1},["s"]={["il"]=206,["co"]=2,["re"]=26,["hp"]=32,840,["ve"]=17.45},["ua"]="11/4/21"}
 	end]]--
 
-	if regionDB[userName] ~= nil and GameTooltip.ampvpHooked == nil then
+	if regionDB[userName] ~= nil then
 		--current rating
 		local cr2s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
 		local cr3s = AMPVP_GetValue(regionDB[userName], entryKeys.currentRatingShort..entryKeys.dbSeparator..entryKeys.c3v3Short)
@@ -522,18 +522,16 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 
 		end
 
-		GameTooltip.ampvpHooked = true
 		GameTooltip:Show()
 
 	else
-		if GameTooltip.ampvpHooked == nil and not AMPVP_GetSettingValue("DISABLE_EMPTY_DATA") then
+		if not AMPVP_GetSettingValue("DISABLE_EMPTY_DATA") then
 			GameTooltip:AddLine(" ")
 			GameTooltip:AddLine("ArenaMaster.IO - No data available."..AMPVP_ColorSub("\nVisit this character's ArenaMaster Profile \nand their info will be available on the next addon update.", "white"))
 			if addSpacePlus then
 				GameTooltip:AddLine(" ")
 			end
 		end
-		GameTooltip.ampvpHooked = true
 		GameTooltip:Show()
 	end
 end
