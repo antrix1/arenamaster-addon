@@ -352,6 +352,9 @@ hooksecurefunc(GameTooltip, "Hide", function(self)
 		GameTooltip.ampvpHooked = nil
 	end
 
+	-- Clear the per-member guard so the next hover re-populates the tooltip.
+	GameTooltip.ampvpLastName = nil
+
 	if friendsTooltipShown then
 		friendsTooltipShown = false
 	end
@@ -385,8 +388,12 @@ GameTooltip:HookScript("OnUpdate", function(self)
 
 		local finalName = aname.."-"..arealm;
 
-		if finalName ~= nil and finalName ~= "" then
+		-- OnUpdate fires every frame; only add our details once per member,
+		-- otherwise AMPVP_AddTooltipDetails appends the same block again each
+		-- frame and the tooltip grows into an endless duplicate list.
+		if finalName ~= nil and finalName ~= "" and GameTooltip.ampvpLastName ~= finalName then
 			AMPVP_AddTooltipDetails(finalName, false)
+			GameTooltip.ampvpLastName = finalName
 		end
 
 	end
