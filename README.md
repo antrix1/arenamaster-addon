@@ -62,6 +62,32 @@ Make sure to keep an eye out for updates and update when available. As the web a
 
 As more players start to use the web app, the data will be updated more frequently and the addon will become more and more useful.
 
+## How Data Updates Work
+
+The ratings, experience and other PvP stats shown by this addon come from a database that is **bundled with the addon itself** — it ships inside the download and is loaded locally while you play. The addon does **not** pull live data from the website while you're in-game, and it does **not** refresh on its own on a daily or weekly schedule the way some other tools (for example, raider.io) do.
+
+A character's in-game data only changes when a **new version of the addon is released and you update it**. Each release packages a fresh snapshot of the ArenaMaster.IO database, so updating the addon is what brings in newer ratings and newly added characters.
+
+## FAQ
+
+### My characters show no data even though I updated them on the website. Why?
+
+Updating your profile on <a href="https://arenamaster.io" target="_blank" rel="noopener">arenamaster.io</a> records your data on the website right away, but that data is only **bundled into the addon when the next addon version is released**. Until you install an addon update that includes a snapshot taken *after* your website update, the in-game tooltips won't show the new numbers — and a character that isn't in the bundled snapshot yet will show no ArenaMaster info at all.
+
+To get your data in-game:
+
+1. Visit your character's profile on <a href="https://arenamaster.io" target="_blank" rel="noopener">arenamaster.io</a> so it's recorded in the database.
+2. Wait for a new addon version that includes a database snapshot taken after that visit.
+3. Update the addon (via CurseForge or your addon manager) and reload the game.
+
+### How often is the data updated?
+
+It updates with addon releases rather than on a fixed daily or weekly schedule. As more players use the web app, snapshots are bundled and released more frequently. Keeping the addon up to date is the way to always see the latest available data.
+
+### How do I know how current a character's data is?
+
+When a character is present in the database, its tooltip includes a **Last Updated** line showing the date that character's data was captured.
+
 ## Support
 
 Interested in supporting the ongoing development of ArenaMaster.IO and getting some in-app benefits while you're at it? Visit our Patreon page to learn more about the mission and available perks.
