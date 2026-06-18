@@ -329,8 +329,11 @@ local function tempHookGametooltip(self, ...)
 	-- guard the ArenaMaster.IO info block is re-appended on each refresh, so the
 	-- tooltip duplicates its contents and grows without bound until the unit
 	-- changes (which clears it). Only add our block once per unit. See issue #22.
+	-- Gate the dedup short-circuit on a real GUID: UnitGUID can be nil for some
+	-- tooltip states, and a nil ampvpLastGUID would otherwise match it and wrongly
+	-- skip adding details for a new tooltip context (issue #22 review).
 	local ampvpGUID = UnitGUID(unit)
-	if GameTooltip.ampvpHooked and GameTooltip.ampvpLastGUID == ampvpGUID then
+	if ampvpGUID and GameTooltip.ampvpHooked and GameTooltip.ampvpLastGUID == ampvpGUID then
 		return
 	end
 
