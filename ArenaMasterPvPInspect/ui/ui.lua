@@ -471,9 +471,19 @@ local function friedsListFunc2(self)
 		end
 	end
 
-	local accData = C_BattleNet.GetFriendGameAccountInfo(bnetIndex, 1)
+	-- No BNet friend index on this tooltip button (e.g. a regular WoW friend
+	-- or an empty entry), so there is nothing for us to inspect.
+	if type(bnetIndex) ~= "number" then return end
 
-	if accData == nil then return end
+	-- Read the game account straight off the account info. Offline BNet
+	-- friends have no active game account, so we stop here for them. This also
+	-- avoids calling C_BattleNet.GetFriendGameAccountInfo, which some addons
+	-- (e.g. ElvUI/MerathilisUI) wrap in a way that errors when the friend is
+	-- offline. See issue #19.
+	local accountInfo = C_BattleNet.GetFriendAccountInfo(bnetIndex)
+	local accData = accountInfo and accountInfo.gameAccountInfo
+
+	if accData == nil or not accData.isOnline then return end
 
 	local realm, name = accData.realmName, accData.characterName
 
