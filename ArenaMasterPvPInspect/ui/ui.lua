@@ -320,10 +320,22 @@ end)
 
 local function tempHookGametooltip(self, ...)
 
-	GameTooltip.ampvpHooked = nil
 	local unitIncompleteName, unit = self:GetUnit()
 
 	if unit == nil then return end
+
+	-- Since Dragonflight the Unit tooltip post-call fires on every refresh of the
+	-- same tooltip without the previously added lines being cleared. Without this
+	-- guard the ArenaMaster.IO info block is re-appended on each refresh, so the
+	-- tooltip duplicates its contents and grows without bound until the unit
+	-- changes (which clears it). Only add our block once per unit. See issue #22.
+	-- Gate the dedup short-circuit on a real GUID: UnitGUID can be nil for some
+	-- tooltip states, and a nil ampvpLastGUID would otherwise match it and wrongly
+	-- skip adding details for a new tooltip context (issue #22 review).
+	local ampvpGUID = UnitGUID(unit)
+	if ampvpGUID and GameTooltip.ampvpHooked and GameTooltip.ampvpLastGUID == ampvpGUID then
+		return
+	end
 
 	local name, realm = UnitName(unit), select(2,UnitName(unit))
 	local compName = nil
@@ -339,6 +351,7 @@ local function tempHookGametooltip(self, ...)
 
 	if UnitIsPlayer(unit) then
 		if compName ~= nil then
+			GameTooltip.ampvpLastGUID = ampvpGUID
 			AMPVP_AddTooltipDetails(compName)
 		end
 	end
@@ -354,6 +367,9 @@ hooksecurefunc(GameTooltip, "Hide", function(self)
 
 	-- Clear the per-member guard so the next hover re-populates the tooltip.
 	GameTooltip.ampvpLastName = nil
+	-- Also clear the unit-tooltip GUID tracker so a fresh hover re-adds our info
+	-- block on the Unit post-call path. See issue #22.
+	GameTooltip.ampvpLastGUID = nil
 
 	if friendsTooltipShown then
 		friendsTooltipShown = false
