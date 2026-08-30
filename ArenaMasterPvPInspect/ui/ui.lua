@@ -1,3 +1,20 @@
+-- IsAddOnLoaded moved to C_AddOns in 11.0.2 and the bare global was removed.
+local function AMPVP_IsAddOnLoaded(name)
+	local fn = (C_AddOns and C_AddOns.IsAddOnLoaded) or IsAddOnLoaded
+	return fn and fn(name)
+end
+
+-- GetMouseFocus() was superseded by GetMouseFoci(), which returns a list ordered
+-- innermost-first, in 11.0.
+local function AMPVP_GetMouseFocus()
+	if GetMouseFoci then
+		local foci = GetMouseFoci()
+		return foci and foci[1]
+	end
+
+	return GetMouseFocus and GetMouseFocus()
+end
+
 -----------REGION DROPDOWN + CPYPROFILE START-----------
 local regionsTable = {
 	[1] = "us",
@@ -7,12 +24,7 @@ local regionsTable = {
 	[5] = "ch"
 }
 
-local dropdownTableLFGData = {}
-local dropdownData = {}
-
-local dropdownTableBNetData = {}
 local friendsTooltipShown = false
-local ampvpFriendsTooltipShown = false
 
 AMPVP_SettingsUI_InstancedToggleGeneralSettingsUI:SetScript("OnClick", function()
 	AMPVP_SettingsUI_Instanced:Hide()
@@ -23,233 +35,95 @@ AMPVP_SettingsUITogglePVPSettingsUI:SetScript("OnClick", function()
 	AMPVP_SettingsUI_Instanced:Show()
 end)
 
-local function AMPVPGetProfileLinkFunc(self, ...)
+-- Show the copy-the-URL popup for one character.
+local function AMPVP_ShowProfileLink(unitName, unitServer)
+	if not unitName or unitName == "" then return end
 
-	if self.value == "AMPVPLinkGet" then
-
-		local drop = _G["UIDROPDOWNMENU_INIT_MENU"]
-		local currRegion = GetCurrentRegion()
-		local unitName = drop.name
-		local unitServer = drop.server
-		local name2, realm
-
-		if (drop.menuList ~= nil) then
-			drop = drop.menuList
-			local name2, realm
-			for k, v in pairs(drop) do
-				if name2 ~= nil then
-					break;
-				end
-				for a, b in pairs(v) do
-					if a == "arg1" then
-						name = b;
-						name2, realm = string.split("-", name)
-						if (realm == nil) then
-							realm = GetRealmName();
-						end
-						break;
-					end
-				end
-			end
-			if (name2 ~= nil) then
-				unitName = name2
-				unitServer = realm
-			end
-		
-		else
-			if (unitName == nil and dropdownData.tempNameHooked ~= nil) or (unitName ~= nil and dropdownData.tempNameHooked ~= nil and unitServer == nil) then
-
-				name2, realm = string.split("-", dropdownData.tempNameHooked)
-				unitName = name2
-				unitServer = realm
-
-			end
-
-			if unitServer == nil and drop.server ~= nil then
-				unitServer = drop.server
-			end
-
-			if unitServer == nil or unitServer == "" then
-				unitServer = GetRealmName();
-			end
-		end
-		unitServer = AMPVP_FixSlangRealms(unitServer)
-
-		AMPVP_CopyCharNameFrame2InputFrameTitleText:SetText("https://arenamaster.io/"..regionsTable[currRegion].."/"..string.lower(unitServer).."/"..string.lower(unitName).."?ref=addon")
-		AMPVP_CopyCharNameFrame2InputFrameTitleText:HighlightText()
-		AMPVP_CopyCharNameFrame2:Show()
-		AMPVP_CopyCharNameFrame2InputFrameTitleText:SetFocus()
-
-		dropdownTableLFGData = {}
-		dropdownData.tempNameHooked = nil
-
+	if not unitServer or unitServer == "" then
+		unitServer = GetNormalizedRealmName() or GetRealmName()
 	end
+
+	if not unitServer or unitServer == "" then return end
+
+	unitServer = AMPVP_FixSlangRealms(unitServer)
+
+	local currRegion = GetCurrentRegion()
+	local regionSlug = regionsTable[currRegion]
+	if not regionSlug then
+		AMPVP_Print("Your region is not supported for profile links.", "red")
+		return
+	end
+
+	AMPVP_CopyCharNameFrame2InputFrameTitleText:SetText(
+		"https://arenamaster.io/"..regionSlug.."/"..string.lower(unitServer).."/"..string.lower(unitName).."?ref=addon")
+	AMPVP_CopyCharNameFrame2InputFrameTitleText:HighlightText()
+	AMPVP_CopyCharNameFrame2:Show()
+	AMPVP_CopyCharNameFrame2InputFrameTitleText:SetFocus()
 end
 
-hooksecurefunc("UIDropDownMenu_OnHide", function(self)
+-- Resolve "who is this menu about" from the contextData the menu system hands us.
+-- Unit-frame menus carry `unit` (and `server` is nil for same-realm players);
+-- chat / friends-list menus carry name+server directly.
+local function AMPVP_MenuTarget(contextData)
+	if not contextData then return nil end
 
-	dropdownTableBNetData = {}
-	dropdownTableLFGData = {}
+	local name, server = contextData.name, contextData.server
 
-end)
-
-DropDownList1:HookScript("OnShow", function(self, ...)
-
-	local lfgName, lfgRealm;
-	dropdownTableLFGData = {}
-	dropdownTableBNetData = {}
-
-	if self.dropdown ~= nil and self.dropdown.clubMemberInfo ~= nil then return end
-
-	for k, v in pairs(self.dropdown) do
-		if self.dropdown.menuList ~= nil and type(self.dropdown.menuList) == "table" then
-			for k,v in pairs(self.dropdown.menuList) do
-				for a, b in pairs(v) do
-					if a == "arg1" then
-						name = b;
-						lfgName, lfgRealm = string.split("-", name)
-						if lfgRealm == nil then
-							lfgRealm = GetRealmName()
-						end
-					end
-				end
-			end
-		end
+	if not name and contextData.unit then
+		if not UnitIsPlayer(contextData.unit) then return nil end
+		name, server = UnitNameUnmodified(contextData.unit)
 	end
 
-	if lfgRealm and lfgName then
-		dropdownData.tempNameHooked = lfgName.."-"..lfgRealm
-		UIDropDownMenu_AddSeparator()
-		local info = UIDropDownMenu_CreateInfo()
-		info.text = "ArenaMaster Profile"
-		info.notCheckable = 1
-		info.func = AMPVPGetProfileLinkFunc
-		info.colorCode = "|cffc72429"
-		info.value = "AMPVPLinkGet"
-		UIDropDownMenu_AddButton(info)
-		dropdownTableBNetData = {}
-		dropdownTableLFGData = {}
-		return
+	if not name or name == "" then return nil end
+
+	-- 12.0 marks some unit identity as a "secret value" inside instances. Those
+	-- cannot be compared or concatenated, so bail rather than raise.
+	if issecretvalue and (issecretvalue(name) or (server ~= nil and issecretvalue(server))) then
+		return nil
 	end
 
-	dropdownData.tempNameHooked = nil
-
-	dropdownTableBNetData = {}
-
-	local dropMenu = self.dropdown
-	local realm = nil
-	local checkAccInfo = false
-	local characterName = nil
-	if dropMenu.accountInfo ~= nil then
-		if dropMenu.accountInfo.gameAccountInfo ~= nil then
-			checkAccInfo = true
-		end
+	if not server or server == "" then
+		server = GetNormalizedRealmName() or GetRealmName()
 	end
 
-	if checkAccInfo then
-		for k, v in pairs(dropMenu.accountInfo.gameAccountInfo) do
+	return name, server
+end
 
-			if k == "realmName" then
-				realm = v
-			end
+-- The UIDropDownMenu system this addon used to hook was replaced in 11.0 and
+-- UnitPopup_ShowMenu was removed outright, so the old integration silently stopped
+-- adding anything. Menu.ModifyMenu is the supported replacement.
+local AMPVP_MENU_TAGS = {
+	"MENU_UNIT_PLAYER",
+	"MENU_UNIT_SELF",
+	"MENU_UNIT_PARTY",
+	"MENU_UNIT_RAID_PLAYER",
+	"MENU_UNIT_TARGET",
+	"MENU_UNIT_FOCUS",
+	"MENU_UNIT_ENEMY_PLAYER",
+	"MENU_UNIT_ARENAENEMY",
+	"MENU_UNIT_FRIEND",
+	"MENU_UNIT_FRIEND_OFFLINE",
+	"MENU_UNIT_BN_FRIEND",
+	"MENU_UNIT_BN_FRIEND_OFFLINE",
+}
 
-			if k == "characterName" then
-				characterName = v
-			end
+local function AMPVP_AddProfileMenuEntry(ownerRegion, rootDescription, contextData)
+	local name, server = AMPVP_MenuTarget(contextData)
+	if not name then return end
 
-		end
+	rootDescription:CreateDivider()
+	rootDescription:CreateButton("|cffc72429ArenaMaster Profile|r", function()
+		AMPVP_ShowProfileLink(name, server)
+	end)
+end
+
+if Menu and Menu.ModifyMenu then
+	for _, tag in ipairs(AMPVP_MENU_TAGS) do
+		Menu.ModifyMenu(tag, AMPVP_AddProfileMenuEntry)
 	end
-
-
-	if characterName ~= "" and realm ~= nil then
-		dropdownTableBNetData["name"] = characterName.."-"..realm
-	end
-
-	if dropdownTableLFGData["name"] == nil and dropdownTableBNetData["name"] == nil then
-		return
-	end
-
-	if (UIDROPDOWNMENU_MENU_LEVEL > 1) then
-		return
-	end
-
-	local namePH = dropdownTableLFGData["name"]
-	local realm = dropdownTableLFGData["realm"]
-
-	if namePH == nil and realm == nil then
-		namePH, realm = string.split("-", dropdownTableBNetData["name"])
-	end
-
-	if dropdownData.tempNameHooked == nil then
-		dropdownData.tempNameHooked = namePH.."-"..realm
-		UIDropDownMenu_AddSeparator()
-		local info = UIDropDownMenu_CreateInfo()
-		info.text = "ArenaMaster Profile"
-		info.notCheckable = 1
-		info.func = AMPVPGetProfileLinkFunc
-		info.colorCode = "|cffc72429"
-		info.value = "AMPVPLinkGet"
-		UIDropDownMenu_AddButton(info)
-		dropdownTableBNetData = {}
-		dropdownTableLFGData = {}
-	end
-end)
-
-
-hooksecurefunc("UnitPopup_ShowMenu", function(self, ...)
-	if (UIDROPDOWNMENU_MENU_LEVEL > 1) then
-		return
-	end
-
-	dropdownTableLFGData = {}
-
-	dropdownData.tempNameHooked = nil
-
-	local unit = self.unit
-	local ctype, _, uName = ...
-
-	if unit == nil then
-
-		if ctype == "COMMUNITIES_GUILD_MEMBER" or ctype == "COMMUNITIES_WOW_MEMBER" or ctype == "FRIEND" or (ctype:find("FRIEND") and not ctype:find("BN")) then
-
-			UIDropDownMenu_AddSeparator()
-
-			local info = UIDropDownMenu_CreateInfo()
-
-			dropdownData.tempNameHooked = uName
-			info.text = "ArenaMaster Profile"
-			info.owner = self.which
-			info.notCheckable = 1
-			info.func = AMPVPGetProfileLinkFunc
-			info.colorCode = "|cffc72429"
-			info.value = "AMPVPLinkGet"
-
-			UIDropDownMenu_AddButton(info)
-
-		end
-
-
-	end
-
-	if UnitIsPlayer(unit) and not self.accountInfo then
-
-		_G.UIDropDownMenu_AddSeparator()
-
-		local info = _G.UIDropDownMenu_CreateInfo()
-
-		dropdownData.tempNameHooked = uName
-		info.text = "ArenaMaster Profile"
-		info.owner = self.which
-		info.notCheckable = 1
-		info.func = AMPVPGetProfileLinkFunc
-		info.colorCode = "|cffc72429"
-		info.value = "AMPVPLinkGet"
-
-		_G.UIDropDownMenu_AddButton(info)
-
-
-	end
-end)
+else
+	AMPVP_Print("This client is too old for the ArenaMaster profile menu entry.", "red")
+end
 
 AMPVP_CreateFrame("AMPVP_CopyCharNameFrame2", UIParent, "CENTER", 0, 0, 450, 100, 0.5, true)
 tinsert(UISpecialFrames, AMPVP_CopyCharNameFrame2:GetName())
@@ -332,7 +206,14 @@ local function tempHookGametooltip(self, ...)
 	-- Gate the dedup short-circuit on a real GUID: UnitGUID can be nil for some
 	-- tooltip states, and a nil ampvpLastGUID would otherwise match it and wrongly
 	-- skip adding details for a new tooltip context (issue #22 review).
+	-- Since 12.0 unit identity can be a "secret value" inside instances, which
+	-- cannot be compared or used as a table key. Skip the dedup guard rather than
+	-- raise; the tooltip still renders, it just re-adds on refresh.
 	local ampvpGUID = UnitGUID(unit)
+	if issecretvalue and ampvpGUID and issecretvalue(ampvpGUID) then
+		ampvpGUID = nil
+	end
+
 	if ampvpGUID and GameTooltip.ampvpHooked and GameTooltip.ampvpLastGUID == ampvpGUID then
 		return
 	end
@@ -380,7 +261,7 @@ end)
 
 GameTooltip:HookScript("OnUpdate", function(self)
 
-	local entry = GetMouseFocus()
+	local entry = AMPVP_GetMouseFocus()
 
 	if entry == nil then
 		return
@@ -445,42 +326,47 @@ GameTooltip:HookScript("OnUpdate", function(self)
 
 end)
 
-GameTooltip:HookScript("OnShow", function(self, ...)
+-- LFG applicant tooltip. Previously driven off GameTooltip's OnShow + a mouse-focus
+-- probe, which fires before Blizzard has populated the tooltip and carries no
+-- context. LFGListApplicantMember_OnEnter is the real, still-present entry point
+-- and hands us the member button directly.
+--
+-- GetApplicantMemberInfo returns 17 values on current retail; only the first is
+-- needed here, so take it positionally rather than unpacking a signature that has
+-- grown twice since this addon last shipped (specID in 10.2, isLeaver in 11.2).
+local function AMPVP_ApplicantTooltip(memberFrame)
+	if not memberFrame then return end
 
-	local entry = GetMouseFocus()
+	local parent = memberFrame:GetParent()
+	local applicantID = parent and parent.applicantID
+	local memberIdx = memberFrame.memberIdx
 
-	local isBnetEntry = false
+	if not applicantID or not memberIdx then return end
 
-	if entry == nil then return end
+	local sname = C_LFGList.GetApplicantMemberInfo(applicantID, memberIdx)
+	if not sname or sname == "" then return end
 
-	if entry.memberIdx ~= nil then
+	local aname, realm = string.split("-", sname)
 
-		local sname, class, localizedClass, level, itemLevel, tank, healer, damage, assignedRole = C_LFGList.GetApplicantMemberInfo(entry:GetParent().applicantID, entry.memberIdx)
-
-		local aname, realm = string.split("-", sname)
-
-		if realm == nil or realm == "" then
-			realm = GetRealmName()
-		end
-
-		local name = aname.."-"..realm
-
-		if name ~= nil then
-
-			if IsAddOnLoaded("RaiderIO") then
-				C_Timer.NewTicker(0.001, function()
-					AMPVP_AddTooltipDetails(name, false)
-				end, 1)
-			else
-				AMPVP_AddTooltipDetails(name, false, PVEFrame, "ANCHOR_RIGHT", 100, 0)
-			end
-
-		end
+	if realm == nil or realm == "" then
+		realm = GetNormalizedRealmName() or GetRealmName()
 	end
 
-end)
+	if not aname or not realm then return end
 
+	local name = aname.."-"..realm
 
+	if AMPVP_IsAddOnLoaded("RaiderIO") then
+		-- RaiderIO rebuilds the tooltip a frame later; append after it.
+		C_Timer.After(0, function() AMPVP_AddTooltipDetails(name, false) end)
+	else
+		AMPVP_AddTooltipDetails(name, false, PVEFrame, "ANCHOR_RIGHT", 100, 0)
+	end
+end
+
+if type(LFGListApplicantMember_OnEnter) == "function" then
+	hooksecurefunc("LFGListApplicantMember_OnEnter", AMPVP_ApplicantTooltip)
+end
 
 local function friedsListFunc2(self)
 
@@ -592,7 +478,7 @@ AMPVP_FriendsListTooltip:SetScript("OnUpdate", function(self)
 
 		local a, b, c, x, y = FriendsTooltip:GetPoint()
 		AMPVP_FriendsListTooltip:ClearAllPoints()
-		if IsAddOnLoaded("RaiderIO") and GameTooltip:IsVisible() then
+		if AMPVP_IsAddOnLoaded("RaiderIO") and GameTooltip:IsVisible() then
 			AMPVP_FriendsListTooltip:SetPoint("TOPLEFT", GameTooltip ,"TOPLEFT", GameTooltip:GetWidth() + 5 , y )
 		else
 			AMPVP_FriendsListTooltip:SetPoint("TOPLEFT", FriendsTooltip ,"TOPLEFT", FriendsTooltip:GetWidth() + 5, y )

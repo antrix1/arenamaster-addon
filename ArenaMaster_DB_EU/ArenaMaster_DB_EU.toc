@@ -1,7 +1,7 @@
-## Interface: 100002
+## Interface: 120100
 ## Title: ArenaMaster EU Database
 ## Author: Antrix, Sadolock / Creepz
-## Version: 1.0
+## Version: 2.0.0
 ## Dependencies: ArenaMasterPVPInspect
 ## Notes: ArenaMaster.IO EU Players Database
 ## DefaultState: enabled

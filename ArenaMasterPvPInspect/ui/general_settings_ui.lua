@@ -29,6 +29,10 @@ AMPVP_CreateCheckbox("STATS_ITEMLEVEL", AMPVP_SettingsUI, "TOPLEFT", 25, -365, "
 AMPVP_CreateCheckbox("STATS_VERSATILITY", AMPVP_SettingsUI, "TOPLEFT", 25, -390, "Display Versatility")
 AMPVP_CreateCheckbox("STATS_HEALTH", AMPVP_SettingsUI, "TOPLEFT", 25, -415, "Display Health")
 --Achievements
+--Solo Shuffle / Battleground Blitz (per specialization)
+AMPVP_CreateText("catSpecBrackets", AMPVP_SettingsUI, "TOPLEFT", 25, -450, "Per-Spec Brackets:")
+AMPVP_CreateCheckbox("SOLO_SHUFFLE", AMPVP_SettingsUI, "TOPLEFT", 25, -465, "Display Solo Shuffle")
+AMPVP_CreateCheckbox("BLITZ", AMPVP_SettingsUI, "TOPLEFT", 25, -490, "Display Blitz")
 AMPVP_CreateText("catAchievements", AMPVP_SettingsUI, "TOPRIGHT", -90, -350, "Achievements:")
 AMPVP_CreateCheckbox("ACHI_SHOW", AMPVP_SettingsUI, "TOPRIGHT", -150, -365, "Display Achievements")
 --disable tooltip
