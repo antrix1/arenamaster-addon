@@ -1,10 +1,12 @@
-## Interface: 100002
+## Interface: 120100
 ## Title: ArenaMaster PVP Inspect
 ## Author: Antrix, Sadolock / Creepz
-## Version: 1.1
+## Version: 2.0.0
 ## Notes: ArenaMaster.IO Helper - PVP Inspection UI
 ## SavedVariables: AMPVP_SettingsVar
 
+regionalData/titles.lua
+regionalData/specs.lua
 modules/framework.lua
 regionalData/realmlist.lua
 ui/general_settings_ui.lua

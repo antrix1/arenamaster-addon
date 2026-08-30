@@ -1,4 +1,14 @@
 local region = GetCurrentRegion()
+
+-- LoadAddOn/IsAddOnLoaded moved into the C_AddOns namespace in 11.0.2 and the
+-- bare globals were removed, so calling them errors on current retail. Resolve
+-- once, keeping the old globals as a fallback for older clients.
+local function AMPVP_LoadAddOn(name)
+	local loader = (C_AddOns and C_AddOns.LoadAddOn) or LoadAddOn
+	if not loader then return false, "MISSING_API" end
+	return loader(name)
+end
+
 AMPVP_DebugMode = false
 local patreonTooltipSpacing = 14
 
@@ -7,28 +17,26 @@ local entryKeys = {
 	currentRatingShort = "cr",
 	currentSeasonShort = "cs",
 	titlesShot = "t",
-	c2v2Short = "2",
-	c3v3Short = "3",
-	RBGShort = "r",
+	c2v2Short = "v2",
+	c3v3Short = "v3",
+	RBGShort = "rb",
 	characterExpShort = "ex",
 	winrateShort = "wr",
 	gamesPlayedShort = "p",
 	accountRaingShort = "a",
+	acc2v2Short = "a2",
+	acc3v3Short = "a3",
+	accRBGShort = "aR",
 	statsShort = "s",
 	lastUpdateShort = "ua",
 	achievementsShort = "a",
 	itemLevelShort = "il",
 	versatilityShort = "ve",
 	healthShort = "hp",
+	soloShort = "so",
+	blitzShort = "bz",
+	ratingShort = "r",
 	patreon = "p",
-}
-
-local tableCovenants = {
-	[1] = "Necrolord",
-	[2] = "Night Fae",
-	[3] = "Venthyr",
-	[4] = "Kyrian",
-	[0] = "None",
 }
 
 local russianRealmsEng = {
@@ -72,7 +80,7 @@ local function tableHasEntries(tableN)
 end
 
 if region == 1 then
-	local loaded, rsn = LoadAddOn("ArenaMaster_DB_US")
+	local loaded, rsn = AMPVP_LoadAddOn("ArenaMaster_DB_US")
 	if loaded then
 		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_US_HORDE
 		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_US_ALLIANCE
@@ -81,7 +89,7 @@ if region == 1 then
 		AMPVP_Print("Regional data does not exist. Make sure you have the latest version of the AddOn running.", "red")
 	end
 elseif region == 2 then
-	local loaded, rsn = LoadAddOn("ArenaMaster_DB_KR")
+	local loaded, rsn = AMPVP_LoadAddOn("ArenaMaster_DB_KR")
 	if loaded then
 		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_KR_HORDE
 		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_KR_ALLIANCE
@@ -90,7 +98,7 @@ elseif region == 2 then
 		AMPVP_Print("Regional data does not exist. Make sure you have the latest version of the AddOn running.", "red")
 	end
 elseif region == 3 then
-	local loaded, rsn = LoadAddOn("ArenaMaster_DB_EU")
+	local loaded, rsn = AMPVP_LoadAddOn("ArenaMaster_DB_EU")
 	if loaded then
 		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_EU_HORDE
 		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_EU_ALLIANCE
@@ -99,7 +107,7 @@ elseif region == 3 then
 		AMPVP_Print("Regional data does not exist. Make sure you have the latest version of the AddOn running.", "red")
 	end
 elseif region == 4 then
-	local loaded, rsn = LoadAddOn("ArenaMaster_DB_TW")
+	local loaded, rsn = AMPVP_LoadAddOn("ArenaMaster_DB_TW")
 	if loaded then
 		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_TW_HORDE
 		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_TW_ALLIANCE
@@ -108,7 +116,7 @@ elseif region == 4 then
 		AMPVP_Print("Regional data does not exist. Make sure you have the latest version of the AddOn running.", "red")
 	end
 elseif region == 5 then
-	local loaded, rsn = LoadAddOn("ArenaMaster_DB_CH")
+	local loaded, rsn = AMPVP_LoadAddOn("ArenaMaster_DB_CH")
 	if loaded then
 		AMPVP_REGIONDATA_HORDE = AMPVP_REGIONDATA_CH_HORDE
 		AMPVP_REGIONDATA_ALLIANCE = AMPVP_REGIONDATA_CH_ALLIANCE
@@ -120,6 +128,64 @@ else
 	AMPVP_Print("The data in your region is unavailable.", "red")
 	AMPVP_REGIONDATA_ALLIANCE = {}
 	AMPVP_REGIONDATA_HORDE = {}
+end
+
+
+-- Solo Shuffle / Battleground Blitz are per-specialization brackets, so the
+-- export ships them as `so`/`bz` tables keyed by ArenaMaster specialization id
+-- (the id => "Spec Class" labels live in regionalData/specs.lua). Flatten one of
+-- those tables into a rating-descending list so the tooltip reads best-first.
+local function AMPVP_SortedSpecRows(entry, key)
+	local rows = entry and entry[key]
+	if type(rows) ~= "table" then return nil end
+
+	local out = {}
+	for specId, row in pairs(rows) do
+		if type(row) == "table" and type(row.r) == "number" and row.r > 0 then
+			out[#out + 1] = { specId = specId, rating = row.r, played = row.p, winrate = row.wr }
+		end
+	end
+
+	if #out == 0 then return nil end
+
+	table.sort(out, function(a, b) return a.rating > b.rating end)
+	return out
+end
+
+local function AMPVP_SpecLabel(specId)
+	local list = AMPVP_SPECLIST
+	local label = list and list[specId]
+	return label or "Unknown"
+end
+
+-- One "<Spec Class>  <rating> (N games, W% won)" pair for a per-spec row.
+local function AMPVP_SpecRowText(row)
+	local right = AMPVP_RatingColorManager(row.rating)
+
+	if row.played and row.played > 0 then
+		local wr = row.winrate
+		if wr ~= nil then
+			local coloured = AMPVP_ColorSub(wr, wr < 50 and "redwinrate" or "greenwinrate", true)
+			right = right .. AMPVP_ColorSub(" (" .. row.played .. " games, ", "white") .. coloured .. AMPVP_ColorSub(" won)", "white")
+		else
+			right = right .. AMPVP_ColorSub(" (" .. row.played .. " games)", "white")
+		end
+	end
+
+	return AMPVP_ColorSub(AMPVP_SpecLabel(row.specId), "white"), right
+end
+
+-- Health ships in thousands so the file stays small; render it the way a player
+-- reads it. The pre-2.0 data files stored a mangled value here, which is why the
+-- old tooltip showed a single-digit "health".
+local function AMPVP_HealthText(healthInThousands)
+	if type(healthInThousands) ~= "number" then return nil end
+
+	if healthInThousands >= 1000 then
+		return string.format("%.1fM", healthInThousands / 1000)
+	end
+
+	return healthInThousands .. "k"
 end
 
 function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor, xOffset, yOffset)
@@ -184,6 +250,10 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 
 		local cseason_titles = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.titlesShot, true)
 
+		--solo shuffle / battleground blitz (per specialization)
+		local soloRows = AMPVP_SortedSpecRows(regionDB[userName], entryKeys.soloShort)
+		local blitzRows = AMPVP_SortedSpecRows(regionDB[userName], entryKeys.blitzShort)
+
 		--character exp
 		local exp2s = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
 		local exp3s = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.c3v3Short)
@@ -193,9 +263,9 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 		local acc_achievements = AMPVP_GetValue(regionDB[userName], entryKeys.achievementsShort, true)
 
 		--highest account rating
-		local acc2s = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.c2v2Short)
-		local acc3s = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.c3v3Short)
-		local accrbg = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.RBGShort)
+		local acc2s = AMPVP_GetValue(regionDB[userName], entryKeys.acc2v2Short)
+		local acc3s = AMPVP_GetValue(regionDB[userName], entryKeys.acc3v3Short)
+		local accrbg = AMPVP_GetValue(regionDB[userName], entryKeys.accRBGShort)
 
 		--character stats
 		local itemLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.itemLevelShort)
@@ -399,6 +469,28 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 				currentSeasonInit = true
 			end
 		end
+		--solo shuffle / blitz
+		local specBracketsInit = false
+		for _, section in ipairs({
+			{ rows = soloRows, title = "Solo Shuffle:", setting = "SOLO_SHUFFLE", instSetting = "INST_SOLO_SHUFFLE" },
+			{ rows = blitzRows, title = "Battleground Blitz:", setting = "BLITZ", instSetting = "INST_BLITZ" },
+		}) do
+			local enabled = (AMPVP_GetSettingValue(section.setting) and not inInstance) or (AMPVP_GetSettingValue(section.instSetting) and inInstance)
+
+			if section.rows and enabled and not shouldDisable then
+				if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit or specBracketsInit then
+					GameTooltip:AddLine(" ")
+				end
+				GameTooltip:AddLine(section.title)
+
+				for _, row in ipairs(section.rows) do
+					GameTooltip:AddDoubleLine(AMPVP_SpecRowText(row))
+				end
+
+				specBracketsInit = true
+			end
+		end
+
 		--season titles
 		if cseason_titles and not shouldDisable then
 			local displayed = false
@@ -492,7 +584,7 @@ function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor
 			end
 
 			if health and not healthDisplayed and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) then
-				GameTooltip:AddDoubleLine(AMPVP_ColorSub("Health","white"), health.."k")
+				GameTooltip:AddDoubleLine(AMPVP_ColorSub("Health","white"), AMPVP_HealthText(health))
 				healthDisplayed = true
 				characterStatsInit = true
 			end
@@ -612,6 +704,10 @@ function AMPVP_AddTooltipFrameText(userName)
 
 		local cseason_titles = AMPVP_GetValue(regionDB[userName], entryKeys.currentSeasonShort..entryKeys.dbSeparator..entryKeys.titlesShot, true)
 
+		--solo shuffle / battleground blitz (per specialization)
+		local soloRows = AMPVP_SortedSpecRows(regionDB[userName], entryKeys.soloShort)
+		local blitzRows = AMPVP_SortedSpecRows(regionDB[userName], entryKeys.blitzShort)
+
 		--character exp
 		local exp2s = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.c2v2Short)
 		local exp3s = AMPVP_GetValue(regionDB[userName], entryKeys.characterExpShort..entryKeys.dbSeparator..entryKeys.c3v3Short)
@@ -621,9 +717,9 @@ function AMPVP_AddTooltipFrameText(userName)
 		local acc_achievements = AMPVP_GetValue(regionDB[userName], entryKeys.achievementsShort, true)
 
 		--highest account rating
-		local acc2s = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.c2v2Short)
-		local acc3s = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.c3v3Short)
-		local accrbg = AMPVP_GetValue(regionDB[userName], entryKeys.accountRaingShort..entryKeys.RBGShort)
+		local acc2s = AMPVP_GetValue(regionDB[userName], entryKeys.acc2v2Short)
+		local acc3s = AMPVP_GetValue(regionDB[userName], entryKeys.acc3v3Short)
+		local accrbg = AMPVP_GetValue(regionDB[userName], entryKeys.accRBGShort)
 
 		--character stats
 		local itemLevel = AMPVP_GetValue(regionDB[userName], entryKeys.statsShort..entryKeys.dbSeparator..entryKeys.itemLevelShort)
@@ -831,6 +927,32 @@ function AMPVP_AddTooltipFrameText(userName)
 				currentSeasonInit = true
 			end
 		end
+		--solo shuffle / blitz
+		local specBracketsInit = false
+		for _, section in ipairs({
+			{ rows = soloRows, title = "Solo Shuffle:", setting = "SOLO_SHUFFLE", instSetting = "INST_SOLO_SHUFFLE" },
+			{ rows = blitzRows, title = "Battleground Blitz:", setting = "BLITZ", instSetting = "INST_BLITZ" },
+		}) do
+			local enabled = (AMPVP_GetSettingValue(section.setting) and not inInstance) or (AMPVP_GetSettingValue(section.instSetting) and inInstance)
+
+			if section.rows and enabled and not shouldDisable then
+				if currentRatingInit or currentSeasonInit or characterExpInit or highestAccRatingInit or specBracketsInit then
+					nrLines = nrLines + 1
+					AMPVP_friendsTTlines[nrLines] = ""
+				end
+				nrLines = nrLines + 1
+				AMPVP_friendsTTlines[nrLines] = section.title
+
+				for _, row in ipairs(section.rows) do
+					local left, right = AMPVP_SpecRowText(row)
+					nrLines = nrLines + 1
+					AMPVP_friendsTTlines[nrLines] = left .. "-" .. right
+				end
+
+				specBracketsInit = true
+			end
+		end
+
 		--season titles
 		if cseason_titles and not shouldDisable then
 			local displayed = false
@@ -936,7 +1058,7 @@ function AMPVP_AddTooltipFrameText(userName)
 
 			if health and not healthDisplayed and (AMPVP_GetSettingValue("STATS_HEALTH") and not inInstance or (AMPVP_GetSettingValue("INST_STATS_HEALTH") and inInstance)) then
 				nrLines = nrLines + 1
-				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Health","white").."-"..health.."k"
+				AMPVP_friendsTTlines[nrLines] = AMPVP_ColorSub("Health","white").."-"..(AMPVP_HealthText(health) or "")
 				healthDisplayed = true
 				characterStatsInit = true
 			end

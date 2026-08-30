@@ -1,1 +1,0 @@
-AMPVP_REGIONDATA_TW = {}

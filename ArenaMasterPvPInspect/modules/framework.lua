@@ -1,47 +1,12 @@
-if (COMMUNITY_UIDD_REFRESH_PATCH_VERSION or 0) < 2 then
-	COMMUNITY_UIDD_REFRESH_PATCH_VERSION = 2
-	if select(4, GetBuildInfo()) > 8000 then
-		local function CleanDropdowns()
-			if COMMUNITY_UIDD_REFRESH_PATCH_VERSION ~= 2 then
-				return
-			end
-			local f, f2 = FriendsFrame, FriendsTabHeader
-			local s = f:IsShown()
-			f:Hide()
-			f:Show()
-			if not f2:IsShown() then
-				f2:Show()
-				f2:Hide()
-			end
-			if not s then
-				f:Hide()
-			end
-		end
-		hooksecurefunc("Communities_LoadUI", CleanDropdowns)
-		hooksecurefunc("SetCVar", function(n)
-			if n == "lastSelectedClubId" then
-				CleanDropdowns()
-			end
-		end)
-	end
-end
+-- NOTE: this file used to carry four UIDropDownMenu taint workarounds
+-- (COMMUNITY_UIDD_REFRESH / UIDROPDOWNMENU_OPEN / UIDROPDOWNMENU_VALUE /
+-- UIDD_REFRESH_OVERREAD). Blizzard replaced the UIDropDownMenu system wholesale
+-- in 11.0 -- no Blizzard menu routes through it any more -- and removed
+-- Communities_LoadUI, so hooksecurefunc("Communities_LoadUI", ...) raised at load
+-- and took the entire addon down with it. The bugs those blocks patched no longer
+-- exist; menu entries now go through Menu.ModifyMenu (see ui/ui.lua).
 
-if (UIDROPDOWNMENU_OPEN_PATCH_VERSION or 0) < 1 then
-	UIDROPDOWNMENU_OPEN_PATCH_VERSION = 1
-	hooksecurefunc("UIDropDownMenu_InitializeHelper", function(frame)
-		if UIDROPDOWNMENU_OPEN_PATCH_VERSION ~= 1 then
-			return
-		end
-		if UIDROPDOWNMENU_OPEN_MENU and UIDROPDOWNMENU_OPEN_MENU ~= frame
-		   and not issecurevariable(UIDROPDOWNMENU_OPEN_MENU, "displayMode") then
-			UIDROPDOWNMENU_OPEN_MENU = nil
-			local t, f, prefix, i = _G, issecurevariable, " \0", 1
-			repeat
-				i, t[prefix .. i] = i + 1
-			until f("UIDROPDOWNMENU_OPEN_MENU")
-		end
-	end)
-end
+
 
 local bracketsColors = { 
 	["gladiator"] = "|cfff1c40f",
@@ -62,142 +27,14 @@ local ranksColors = {
 	[1749] = "|cffffffff",
 }
 
-AMPVP_AchievementsAndTitlesList = {
-	[1] = "Duelist",
-	[2] = "Rival",
-	[3] = "Challenger",
-	[4] = "Gladiator",
-	[5] = "Merciless Gladiator",
-	[6] = "Vengeful Gladiator",
-	[7] = "Brutal Gladiator",
-	[8] = "Deadly Gladiator",
-	[9] = "Furious Gladiator",
-	[10] = "Relentless Gladiator",
-	[11] = "Wrathful Gladiator",
-	[12] = "Vicious Gladiator",
-	[13] = "Ruthless Gladiator",
-	[14] = "Cataclysmic Gladiator",
-	[15] = "Malevolent Gladiator",
-	[16] = "Tyrannical Gladiator",
-	[17] = "Griveous Gladiator",
-	[18] = "Prideful Gladiator",
-	[19] = "Primal Gladiator",
-	[20] = "Wild Gladiator",
-	[21] = "Warmongering Gladiator",
-	[22] = "Battlemaster",
-	[23] = "Battlemaster",
-	[24] = "Mongolian version of Battlemaster",
-	[25] = "Khan",
-	[26] = "100000 Honorable Kills",
-	[27] = "250000 Honorable Kills",
-	[28] = "Three's Company: 2700",
-	[29] = "Three's Company: 2400",
-	[30] = "Three's Company: 2200",
-	[31] = "Three's Company: 2000",
-	[32] = "Three's Company: 1750",
-	[33] = "Three's Company: 1550",
-	[34] = "Just the Two of Us: 2200",
-	[35] = "Just the Two of Us: 2000",
-	[36] = "Just the Two of Us: 1750",
-	[37] = "Just the Two of Us: 1550",
-	[38] = "Scout: 1100",
-	[39] = "Private: 1100",
-	[40] = "Grunt: 1200",
-	[41] = "Corporal: 1200",
-	[42] = "Sergeant: 1300",
-	[43] = "Sergeant: 1300",
-	[44] = "Senior Sergeant: 1400",
-	[45] = "Master Sergeant: 1400",
-	[46] = "First Sergeant: 1500",
-	[47] = "Sergeant Major: 1500",
-	[48] = "Stone Guard: 1600",
-	[49] = "Knight: 1600",
-	[50] = "Blood Guard: 1700",
-	[51] = "Knight Luitenant: 1700",
-	[52] = "Legionnaire: 1800",
-	[53] = "Knight Captain: 1800",
-	[54] = "Centurion: 1900",
-	[55] = "Knight Champion: 1900",
-	[56] = "Champion: 2000",
-	[57] = "Lieutenant Commander: 2000",
-	[58] = "Lieutenant General: 2100",
-	[59] = "Commander: 2100",
-	[60] = "General: 2200",
-	[61] = "Marshal: 2200",
-	[62] = "Warlord: 2300",
-	[63] = "Field Marshal: 2300",
-	[64] = "High Warlord: 2400",
-	[65] = "Grand Marshal: 2400",
-	[66] = "Hero of the Horde",
-	[67] = "Hero of the Alliance",
-	[68] = "The Arena Master",
-	[69] = "Vindictive Gladiator",
-	[70] = "Fearless Gladiator",
-	[71] = "Cruel Gladiator",
-	[72] = "Ferocious Gladiator",
-	[73] = "Fierce Gladiator",
-	[74] = "Dominant Gladiator",
-	[75] = "Demonic Gladiator",
-	[77] = "Vindictive Elite",
-	[78] = "Fearless Elite",
-	[79] = "Cruel Elite",
-	[80] = "Ferocious Elite",
-	[81] = "Fierce Elite",
-	[82] = "Dominant Elite",
-	[83] = "Demonic Elite",
-	[84] = "Gladiator: Battle for Azeroth Season 1",
-	[85] = "Duelist: Battle for Azeroth Season 1",
-	[86] = "Rival: Battle for Azeroth Season 1",
-	[87] = "Challenger: Battle for Azeroth Season 1",
-	[88] = "Gladiator: Battle for Azeroth Season 2",
-	[89] = "Duelist: Battle for Azeroth Season 2",
-	[90] = "Rival: Battle for Azeroth Season 2",
-	[91] = "Challenger: Battle for Azeroth Season 2",
-	[92] = "Elite: Battle for Azeroth Season 1",
-	[93] = "Elite: Battle for Azeroth Season 2",
-	[94] = "Gladiator: Battle for Azeroth Season 3",
-	[95] = "Elite: Battle for Azeroth Season 3",
-	[96] = "Duelist: Battle for Azeroth Season 3",
-	[97] = "Challenger: Battle for Azeroth Season 3",
-	[98] = "Rival: Battle for Azeroth Season 3",
-	[99] = "Dread Gladiator",
-	[100] = "Sinister Gladiator",
-	[101] = "Notorious Gladiator",
-	[102] = "Gladiator: Battle for Azeroth Season 4",
-	[103] = "Duelist: Battle for Azeroth Season 4",
-	[104] = "Rival: Battle for Azeroth Season 4",
-	[105] = "Challenger: Battle for Azeroth Season 4",
-	[106] = "Corrupted Gladiator",
-	[107] = "Combatant: Shadowlands Season 1",
-	[108] = "Challenger: Shadowlands Season 1",
-	[109] = "Rival: Shadowlands Season 1",
-	[110] = "Duelist: Shadowlands Season 1",
-	[111] = "Elite: Shadowlands Season 1",
-	[112] = "Gladiator: Shadowlands Season 1",
-	[113] = "Sinful Gladiator: Shadowlands Season 1",
-	[114] = "Elite: Battle for Azeroth Season 4",
-	[115] = "Combatant: Shadowlands Season 2",
-	[116] = "Challenger: Shadowlands Season 2",
-	[117] = "Rival: Shadowlands Season 2",
-	[118] = "Duelist: Shadowlands Season 2",
-	[119] = "Elite: Shadowlands Season 2",
-	[120] = "Gladiator: Shadowlands Season 2",
-	[121] = "Unchained Gladiator: Shadowlands Season 2",
-	[122] = "Challenger: Shadowlands Season 3",
-	[123] = "Combatant: Shadowlands Season 3",
-	[124] = "Rival: Shadowlands Season 3",
-	[125] = "Duelist: Shadowlands Season 3",
-	[126] = "Elite: Shadowlands Season 3",
-	[127] = "Gladiator: Shadowlands Season 3",
-	[128] = "Cosmic Gladiator: Shadowlands Season 3",
-	[129] = "Challenger: Shadowlands Season 4",
-	[130] = "Combatant: Shadowlands Season 4",
-	[131] = "Rival: Shadowlands Season 4",
-	[132] = "Duelist: Shadowlands Season 4",
-	[133] = "Elite: Shadowlands Season 4",
-	[134] = "Gladiator: Shadowlands Season 4",
-	[135] = "Eternal Gladiator: Shadowlands Season 4",
-}
+-- AMPVP_AchievementsAndTitlesList is generated by the backend into
+-- regionalData/titles.lua (loaded before this file), so a new season's titles need
+-- no addon edit. The old hard-coded table stopped at Shadowlands season 4, which
+-- is why every Dragonflight / War Within / Midnight title rendered blank.
+-- AMPVP_SPECLIST (specialization id => "Spec Class") comes from regionalData/specs.lua.
+-- Both are declared here only as a safety net if those files fail to load.
+AMPVP_AchievementsAndTitlesList = AMPVP_AchievementsAndTitlesList or {}
+AMPVP_SPECLIST = AMPVP_SPECLIST or {}
 
 function AMPVP_ConvertStringToTable(str, character)
   local result = {}
@@ -257,7 +94,7 @@ function AMPVP_ConvertRankAchievement(rankName)
 		end
 		
 		if newTitleName == "" then
-			newTitleName = brackets["none"] .. rankName .. "|r"
+			newTitleName = bracketsColors["none"] .. rankName .. "|r"
 		end
 	end
 	
@@ -296,51 +133,7 @@ function AMPVP_ConvertDateToStandardEU(datet)
 	
 end
 
-if (UIDROPDOWNMENU_VALUE_PATCH_VERSION or 0) < 2 then
-	UIDROPDOWNMENU_VALUE_PATCH_VERSION = 2
-	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
-		if UIDROPDOWNMENU_VALUE_PATCH_VERSION ~= 2 then
-			return
-		end
-		for i=1, UIDROPDOWNMENU_MAXLEVELS do
-			for j=1, UIDROPDOWNMENU_MAXBUTTONS do
-				local b = _G["DropDownList" .. i .. "Button" .. j]
-				if not (issecurevariable(b, "value") or b:IsShown()) then
-					b.value = nil
-					repeat
-						j, b["fx" .. j] = j+1
-					until issecurevariable(b, "value")
-				end
-			end
-		end
-	end)
-end
 
-if (UIDD_REFRESH_OVERREAD_PATCH_VERSION or 0) < 1 then
-	UIDD_REFRESH_OVERREAD_PATCH_VERSION = 1
-	local function drop(t, k)
-		local c = 42
-		t[k] = nil
-		while not issecurevariable(t, k) do
-			if t[c] == nil then
-				t[c] = nil
-			end
-			c = c + 1
-		end
-	end
-	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
-		if UIDD_REFRESH_OVERREAD_PATCH_VERSION ~= 1 then
-			return
-		end
-		for i=1,UIDROPDOWNMENU_MAXLEVELS do
-			for j=1,UIDROPDOWNMENU_MAXBUTTONS do
-				local b, _ = _G["DropDownList" .. i .. "Button" .. j]
-				_ = issecurevariable(b, "checked")      or drop(b, "checked")
-				_ = issecurevariable(b, "notCheckable") or drop(b, "notCheckable")
-			end
-		end
-	end)
-end
 
 local backdrop = {
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -533,7 +326,9 @@ function AMPVP_CreateButtonText(txt, btnName, frameParent, region, posX, posY, f
 
 	local btnName = CreateFrame("Button", "$parent"..btnName, frameParent)
 	btnName:ClearAllPoints()
-	btnName:SetNormalTexture(nil)
+	if btnName.ClearNormalTexture then
+		btnName:ClearNormalTexture()
+	end
 	if sizeX == nil then
 		btnName:SetSize(120, 35)
 	else
@@ -690,6 +485,9 @@ function AMPVP_LoginSettingsLoadSave()
 			STATS_COVENANT = true,
 			STATS_RENOWN = true,
 			STATS_HEALTH = true,
+			--Solo Shuffle / Battleground Blitz
+			SOLO_SHUFFLE = true,
+			BLITZ = true,
 			--Achievements
 			ACHI_SHOW = true,
 			--Misc
@@ -722,6 +520,9 @@ function AMPVP_LoginSettingsLoadSave()
 			INST_STATS_COVENANT = true,
 			INST_STATS_RENOWN = true,
 			INST_STATS_HEALTH = true,
+			--Solo Shuffle / Battleground Blitz
+			INST_SOLO_SHUFFLE = true,
+			INST_BLITZ = true,
 			--Achievements
 			INST_ACHI_SHOW = true,
 		}
@@ -733,6 +534,17 @@ function AMPVP_LoginSettingsLoadSave()
 	
 	if AMPVP_SettingsVar ~= nil and AMPVP_SettingsVar.DISABLE_IN_PVPENV == nil then
 		AMPVP_SettingsVar.DISABLE_IN_PVPENV = false;
+	end
+
+	-- Toggles added in 2.0. Anyone upgrading already has a saved settings table,
+	-- so default the new keys on or the Solo Shuffle / Blitz sections would never
+	-- render for them.
+	if AMPVP_SettingsVar ~= nil then
+		for _, key in ipairs({ "SOLO_SHUFFLE", "BLITZ", "INST_SOLO_SHUFFLE", "INST_BLITZ" }) do
+			if AMPVP_SettingsVar[key] == nil then
+				AMPVP_SettingsVar[key] = true
+			end
+		end
 	end
 	
 end

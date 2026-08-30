@@ -10,13 +10,15 @@ You can hover over a player's unit frame in the open world and see at a glance t
 
 With the new addon version, you can see even more PvP info, like current season performance, account achievements, and overall character stats like versatility and health.
 
+Solo Shuffle and Battleground Blitz are shown per specialization, best rating first, with the games played and win rate for each spec — so you can tell at a glance whether the healer you're looking at is a 2400 Mistweaver or a 1600 Windwalker.
+
 ![ArenaMaster.IO Unit Frame Hover](https://arenamaster.s3.eu-central-1.amazonaws.com/addon/NewTooltip.png "ArenaMaster.IO Tooltip Hover")
 
 ## Settings
 
 With the new update you can control which info you're interested in seeing when in the open world / LFG and you also have a separate config for when you're in arenas or battlegrounds.
 
-Type `/ampvp` in chat to bring up the settings interface.
+Type `/ampvp` in chat to bring up the settings interface. Every section — including the new Solo Shuffle and Battleground Blitz lines — can be toggled independently for the open world and for arenas/battlegrounds.
 
 ![ArenaMaster.IO Tooltip Settings](https://arenamaster.s3.eu-central-1.amazonaws.com/addon/TooltipSettings.png "ArenaMaster.IO Tooltip Settings")
 
