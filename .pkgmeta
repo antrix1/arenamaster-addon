@@ -1,7 +1,15 @@
 package-as: ArenaMasterPvPInspect
 enable-nolib-creation: no
 
+# Multi-flavor: every sub-addon ships a retail TOC and a *_Camelot.toc sibling
+# (WoW: Forever, ## Interface: 16001). The packager picks the TOC by suffix, so
+# no toc-creation / splitting is needed here.
+
 move-folders:
-	ArenaMasterPvPInspect/ArenaMaster_DB_EU: ArenaMaster_DB_EU
-	ArenaMasterPvPInspect/ArenaMaster_DB_US: ArenaMaster_DB_US
-	ArenaMasterPvPInspect/ArenaMasterPvPInspect: ArenaMasterPvPInspect
+    ArenaMasterPvPInspect/ArenaMaster_DB_EU: ArenaMaster_DB_EU
+    ArenaMasterPvPInspect/ArenaMaster_DB_US: ArenaMaster_DB_US
+    ArenaMasterPvPInspect/ArenaMasterPvPInspect: ArenaMasterPvPInspect
+
+ignore:
+    - .luacheckrc
+    - .github
