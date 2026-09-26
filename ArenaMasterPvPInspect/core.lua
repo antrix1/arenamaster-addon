@@ -130,6 +130,22 @@ else
 	AMPVP_REGIONDATA_HORDE = {}
 end
 
+-- WoW: Forever ships its own per-region tables
+-- (AMPVP_REGIONDATA_FOREVER_<REGION>_<FACTION> from
+-- regionalData/FOREVER-<REGION>_<FACTION>.lua, listed only in the *_Camelot DB
+-- TOCs, so the retail tables above are simply nil there). Swap them in after the
+-- retail loader so the retail path stays untouched. See modules/forever.lua.
+if AMPVP_IS_FOREVER then
+	local code = AMPVP_ForeverRegionCode(region)
+	local horde = code and _G["AMPVP_REGIONDATA_FOREVER_" .. code .. "_HORDE"]
+	local alliance = code and _G["AMPVP_REGIONDATA_FOREVER_" .. code .. "_ALLIANCE"]
+	AMPVP_REGIONDATA_HORDE = horde or {}
+	AMPVP_REGIONDATA_ALLIANCE = alliance or {}
+	if not horde and not alliance then
+		AMPVP_Print("WoW: Forever character data for your region is not bundled yet; level, class and honor rank are read live from the game.")
+	end
+end
+
 
 -- Solo Shuffle / Battleground Blitz are per-specialization brackets, so the
 -- export ships them as `so`/`bz` tables keyed by ArenaMaster specialization id
@@ -189,6 +205,10 @@ local function AMPVP_HealthText(healthInThousands)
 end
 
 function AMPVP_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor, xOffset, yOffset)
+	if AMPVP_IS_FOREVER then
+		return AMPVP_Forever_AddTooltipDetails(userName, addSpacePlus, frameOwner, ownerAnchor, xOffset, yOffset)
+	end
+
 	GameTooltip.ampvpHooked = true
 	local regionDB1 = AMPVP_REGIONDATA_HORDE
 	local regionDB2 = AMPVP_REGIONDATA_ALLIANCE
@@ -630,6 +650,9 @@ end
 
 
 function AMPVP_AddTooltipFrameText(userName)
+	if AMPVP_IS_FOREVER then
+		return AMPVP_Forever_AddTooltipFrameText(userName)
+	end
 
 	local regionDB1 = AMPVP_REGIONDATA_HORDE
 	local regionDB2 = AMPVP_REGIONDATA_ALLIANCE

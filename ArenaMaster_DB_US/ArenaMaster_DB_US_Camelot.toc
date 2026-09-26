@@ -1,0 +1,13 @@
+## Interface: 16001
+## Title: ArenaMaster US Database
+## Author: Antrix, Sadolock / Creepz
+## Version: 2.1.0
+## X-Flavor: forever
+## Dependencies: ArenaMasterPVPInspect
+## Notes: ArenaMaster.IO US Players Database
+## DefaultState: enabled
+## LoadOnDemand: 1
+# WoW: Forever (Classic+, codename Camelot) flavor. The client picks this TOC on a 1.60.x (16xxx) build; retail uses the sibling without the suffix.
+
+../ArenaMasterPvPInspect/regionalData/FOREVER-US_HORDE.lua
+../ArenaMasterPvPInspect/regionalData/FOREVER-US_ALLIANCE.lua

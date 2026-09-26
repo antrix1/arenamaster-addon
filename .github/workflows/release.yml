@@ -1,0 +1,46 @@
+# Packages the addon with the BigWigs packager and uploads one zip to CurseForge
+# (project 413388) and the GitHub release. The zip carries both TOC sets:
+#   retail  -> plain .toc files   (## Interface: 120100)
+#   forever -> *_Camelot.toc files (## Interface: 16001, WoW: Forever), which
+#              the packager reports as CurseForge game version type 88568.
+# WoWInterface has no Forever flavor and is skipped by the packager.
+#
+# Why one multi-version build instead of `-g retail` + `-g forever`: with a
+# forced single flavor the packager validates every sub-addon TOC against it,
+# and the retail-only ArenaMaster_DB_*.toc files fail `-g forever`
+# ("does not have an interface version that is compatible with the game
+# version forever"). The default build accepts both and uploads
+# "Game version: 12.1.0, 1.60.1" in one file.
+#
+# Triggered by the vYYYYMMDDHHMM tags the website's RefreshAddonData job creates
+# through the GitHub API (that also fires this push event), or by hand.
+#
+# NOTE: GitHub Actions is currently disabled on this account (billing), so until
+# that is resolved run the packager locally -- see the "Releasing" section in
+# README.md for the exact commands.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Package retail + forever
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # The repo history is ~12.7 GB of regenerated data files; a shallow
+          # checkout of the tag is all the packager needs.
+          fetch-depth: 1
+
+      - name: Package and upload
+        uses: BigWigsMods/packager@v2
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
