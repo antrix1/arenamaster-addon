@@ -18,6 +18,10 @@
 --           the same convention as retail's "Name-Realm"; Lua's string.lower is
 --           ASCII-only so lowercasing would break accented names), ruleset one of
 --           "normal" | "pvp" | "rp" (see AMPVP_ForeverRuleset).
+--   slug    the URL carries Character.slug_for's slug, NOT the key: an
+--           intra-part hyphen is escaped ("Anne-Marie Solheim" ->
+--           "anne--marie-solheim") and the name is Unicode-lowercased. See
+--           AMPVP_ForeverSlug.
 --   entry   { lv=60, cl="WARRIOR", hr=10, hk=1234, p=true, ua="d/m/yy" }
 --           lv level, cl class file name, hr honor rank 1..14, hk lifetime honorable
 --           kills, p Patreon supporter, ua last updated. Every field optional; 0 and
@@ -144,6 +148,76 @@ function AMPVP_ForeverRuleset(realmHint)
 	return "normal"
 end
 
+-- Unicode-aware lowercase for the ranges WoW character names actually use.
+--
+-- Needed because the website's slug is built with Ruby's `mb_chars.downcase`
+-- (Character.slug_for) while Lua's string.lower is ASCII-only and the client has
+-- no utf8lower -- so "Élodie Sunstrider" would slug as "Élodie-sunstrider" and
+-- 404 against the site's "élodie-sunstrider".
+--
+-- The table is every uppercase/lowercase pair in Latin-1 Supplement, Latin
+-- Extended-A, Latin Extended-B and Cyrillic (U+0400-U+045F) whose UTF-8 encoding
+-- is two bytes on both sides -- 245 pairs, generated from Unicode data. The three
+-- excluded oddballs do not survive a 2-byte mapping and are not in Blizzard's
+-- name charset for these regions: U+0130 (I with dot, lowercases to two code
+-- points), U+023A and U+023E (lowercase to three bytes).
+local FOREVER_LOWER_MAP = {}
+do
+	-- Each group is a run of "<uppercase><lowercase>" pairs.
+	local packed = table.concat({
+		"ÀàÁáÂâÃãÄäÅåÆæÇçÈèÉéÊêËëÌìÍíÎîÏï",
+		"ÐðÑñÒòÓóÔôÕõÖöØøÙùÚúÛûÜüÝýÞþĀāĂă",
+		"ĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģ",
+		"ĤĥĦħĨĩĪīĬĭĮįĲĳĴĵĶķĹĺĻļĽľĿŀŁłŃńŅņ",
+		"ŇňŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧ",
+		"ŨũŪūŬŭŮůŰűŲųŴŵŶŷŸÿŹźŻżŽžƁɓƂƃƄƅƆɔ",
+		"ƇƈƉɖƊɗƋƌƎǝƏəƐɛƑƒƓɠƔɣƖɩƗɨƘƙƜɯƝɲƟɵ",
+		"ƠơƢƣƤƥƦʀƧƨƩʃƬƭƮʈƯưƱʊƲʋƳƴƵƶƷʒƸƹƼƽ",
+		"ǄǆǅǆǇǉǈǉǊǌǋǌǍǎǏǐǑǒǓǔǕǖǗǘǙǚǛǜǞǟǠǡ",
+		"ǢǣǤǥǦǧǨǩǪǫǬǭǮǯǱǳǲǳǴǵǶƕǷƿǸǹǺǻǼǽǾǿ",
+		"ȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟ",
+		"ȠƞȢȣȤȥȦȧȨȩȪȫȬȭȮȯȰȱȲȳȻȼȽƚɁɂɃƀɄʉɅʌ",
+		"ɆɇɈɉɊɋɌɍɎɏЀѐЁёЂђЃѓЄєЅѕІіЇїЈјЉљЊњ",
+		"ЋћЌќЍѝЎўЏџАаБбВвГгДдЕеЖжЗзИиЙйКк",
+		"ЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъ",
+		"ЫыЬьЭэЮюЯя",
+	})
+
+	for i = 1, #packed, 4 do
+		FOREVER_LOWER_MAP[packed:sub(i, i + 1)] = packed:sub(i + 2, i + 3)
+	end
+end
+
+-- ASCII and the mapped two-byte sequences are disjoint, so the two passes cannot
+-- interfere. Three-byte sequences (CJK and friends) are caseless and pass through.
+function AMPVP_ForeverLower(text)
+	if type(text) ~= "string" then return "" end
+
+	local lowered = text:gsub("[A-Z]", string.lower)
+	lowered = lowered:gsub("[\194-\223][\128-\191]", FOREVER_LOWER_MAP)
+	return lowered
+end
+
+-- URL slug for a Forever character name. Mirrors Character.slug_for on the
+-- website (backend/app/models/character.rb) exactly:
+--
+--   name.mb_chars.downcase.wrapped_string.strip.gsub('-', '--').gsub(/\s+/, '-')
+--
+-- A hyphen INSIDE a name part is escaped as "--" so the two-part split stays
+-- unambiguous: without it "Anne-Marie Solheim" and "Anne Marie-Solheim" and
+-- "Anne Marie Solheim" would all collapse to the same slug and the site could not
+-- reverse it (Character.name_from_slug). Apostrophes are left alone, as on the
+-- site: "O'Brien McKenna" -> "o'brien-mckenna".
+function AMPVP_ForeverSlug(name)
+	if type(name) ~= "string" then return "" end
+
+	local slug = AMPVP_ForeverLower(name)
+	slug = slug:gsub("^%s+", ""):gsub("%s+$", "")   -- .strip
+	slug = slug:gsub("%-", "--")                    -- escape an intra-part hyphen
+	slug = slug:gsub("%s+", "-")                    -- join the name parts
+	return slug
+end
+
 -- True if `part` is a realm / ruleset label rather than a name part.
 local function AMPVP_ForeverIsRealmLike(part)
 	if part == nil or part == "" then return true end
@@ -154,34 +228,70 @@ local function AMPVP_ForeverIsRealmLike(part)
 		or lowered:find("roleplay", 1, true) ~= nil or lowered:find("hardcore", 1, true) ~= nil
 end
 
--- Splits "Something-Rest" into the full name and the ruleset hint. Beta reports
--- suggest UnitName() on Forever returns the first name with the surname in the
--- realm slot (https://github.com/Offroads/WoWForeverRace/issues/33), so the
--- retail hooks will hand us "Firstname-Lastname" as well as "Name-<realm>". If
--- the part after the dash is not a realm-like label, it is the surname.
+-- Splits whatever the hooks hand us into the full name and the ruleset hint.
+--
+-- Three shapes arrive here, and a dash means something different in each:
+--   "Thrall-Durotan"       UnitName() put the surname in the realm slot
+--                          (https://github.com/Offroads/WoWForeverRace/issues/33)
+--   "Thrall Durotan-pvp"   full name joined to the ruleset by the retail hooks
+--   "Anne-Marie Solheim"   a hyphen INSIDE a name part -- must survive verbatim,
+--                          or the key and the URL slug both point at nothing
+--
+-- Order matters: peel a trailing ruleset first, and only then consider joining a
+-- lone "First-Last" pair. A name whose ruleset we just peeled is already complete,
+-- so "Anne-Marie-pvp" keeps its hyphen while "Thrall-Durotan" becomes two parts.
+--
+-- Residual ambiguity, unresolvable from a bare string: "Anne-Marie" with no
+-- ruleset could be a hyphenated first name or name+realm. It is read as
+-- name+realm because the retail hooks always append a realm (GetRealmName() when
+-- the unit has none). The unit path avoids the guess entirely -- see
+-- AMPVP_ForeverUnitName, which asks GetUnitName(unit, true) for the whole name.
 local function AMPVP_ForeverSplitName(name, realmHint)
-	local base, hint = name, nil
-	local rest = nil
-	local dash = string.find(base, "-", 1, true)
-	if dash then
-		rest = string.sub(base, dash + 1)
-		base = string.sub(base, 1, dash - 1)
-	end
+	local base = name:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
+	local hint, surname = nil, nil
 
-	-- Both the part after the dash and the separate realm argument can be a
-	-- ruleset label or the surname; the surname is appended once.
-	local function absorb(part)
-		if part == nil or part == "" then return end
-		if AMPVP_ForeverIsRealmLike(part) then
-			hint = hint or part
-		elseif not (" " .. base .. " "):find(" " .. part .. " ", 1, true) then
-			base = base .. " " .. part
+	-- A separate realm argument is either the ruleset or the surname.
+	if type(realmHint) == "string" and realmHint ~= "" then
+		if AMPVP_ForeverIsRealmLike(realmHint) then
+			hint = realmHint
+		else
+			surname = realmHint
 		end
 	end
-	absorb(rest)
-	absorb(realmHint)
 
-	base = base:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
+	-- Peel a trailing "-<ruleset>". Rulesets are a closed, space-free set and
+	-- Forever has no realms, so this cannot swallow a surname with a space.
+	local peeled = false
+	local lastDash
+	for i = #base, 1, -1 do
+		if base:sub(i, i) == "-" then
+			lastDash = i
+			break
+		end
+	end
+	if lastDash then
+		local tail = base:sub(lastDash + 1)
+		if tail ~= "" and AMPVP_ForeverIsRealmLike(tail) then
+			hint = hint or tail
+			base = base:sub(1, lastDash - 1)
+			peeled = true
+		end
+	end
+
+	-- Only a whole string of exactly two space-free tokens around one dash is the
+	-- hooks' "Name-Realm" join. "Anne-Marie Solheim" and "Anne Marie-Solheim"
+	-- both carry a space and are left verbatim.
+	if not peeled and not surname then
+		local first, last = base:match("^([^%s%-]+)%-([^%s%-]+)$")
+		if first then
+			base = first .. " " .. last
+		end
+	end
+
+	if surname and not (" " .. base .. " "):find(" " .. surname .. " ", 1, true) then
+		base = base .. " " .. surname
+	end
+
 	return base, hint
 end
 
@@ -224,7 +334,7 @@ function AMPVP_ForeverProfileURL(name, realmHint, regionSlug)
 	if type(name) ~= "string" or name == "" or not regionSlug then return nil end
 
 	local base, hint = AMPVP_ForeverSplitName(name, AMPVP_Unsecret(realmHint))
-	local slug = (string.lower(base):gsub("%s+", "-"))
+	local slug = AMPVP_ForeverSlug(base)
 	if slug == "" then return nil end
 
 	return string.format(AMPVP_FOREVER_PROFILE_URL, regionSlug, AMPVP_ForeverRuleset(hint), slug)

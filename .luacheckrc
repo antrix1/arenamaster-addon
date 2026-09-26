@@ -78,6 +78,8 @@ globals = {
 	"AMPVP_Forever_AddTooltipDetails",
 	"AMPVP_Forever_AddTooltipFrameText",
 	"AMPVP_ForeverKey",
+	"AMPVP_ForeverSlug",
+	"AMPVP_ForeverLower",
 	"AMPVP_ForeverRuleset",
 	"AMPVP_ForeverProfileURL",
 	"AMPVP_ForeverUnitName",
