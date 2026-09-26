@@ -491,7 +491,14 @@ end
 local function AMPVP_ForeverBuildBlock(userName, unit, addLine, addDoubleLine)
 	local inInstance = IsInInstance()
 	local live = unit and AMPVP_ForeverLiveInfo(unit) or nil
-	local entry, entryFaction = AMPVP_ForeverLookup(userName, live and live.faction)
+
+	-- With a unit in hand, build the key from the unit itself: the legacy
+	-- `userName` string comes from UnitName(), which on Forever may carry only
+	-- the first name (or a ruleset label in the realm slot), and the export is
+	-- keyed by the full "Firstname Lastname". The string path is only for
+	-- Battle.net friends / LFG entries, where no unit exists.
+	local lookupName = (unit and AMPVP_ForeverUnitName(unit)) or userName
+	local entry, entryFaction = AMPVP_ForeverLookup(lookupName, live and live.faction)
 	local faction = (live and live.faction) or entryFaction or "Alliance"
 
 	local showLevel = AMPVP_ForeverSetting("FOREVER_LEVEL_CLASS", inInstance)
