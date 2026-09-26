@@ -1,10 +1,12 @@
-## Interface: 120100
+## Interface: 16001
 ## Title: ArenaMaster PVP Inspect
 ## Author: Antrix, Sadolock / Creepz
 ## Version: 2.1.0
+## X-Flavor: forever
 ## Notes: ArenaMaster.IO Helper - PVP Inspection UI
 ## SavedVariables: AMPVP_SettingsVar
 ## X-Curse-Project-ID: 413388
+# WoW: Forever (Classic+, codename Camelot) flavor. The client picks this TOC on a 1.60.x (16xxx) build; retail uses the sibling without the suffix.
 
 regionalData/titles.lua
 regionalData/specs.lua

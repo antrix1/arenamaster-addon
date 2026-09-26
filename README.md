@@ -90,6 +90,35 @@ It updates with addon releases rather than on a fixed daily or weekly schedule. 
 
 When a character is present in the database, its tooltip includes a **Last Updated** line showing the date that character's data was captured.
 
+## WoW: Forever (Classic+)
+
+The same package works on WoW: Forever (client 1.60.x, `## Interface: 16001`). Every addon folder ships a `*_Camelot.toc` sibling that the Forever client picks up; the retail client keeps using the plain `.toc`. Forever has no arena or rated battlegrounds until the 2027 PvP refresh, so there the tooltip shows what the Classic honor system offers instead:
+
+- level and class (read live from the game),
+- honor rank and rank name with the rank badge (live, `UnitPVPRank`),
+- honorable kills, plus today's / this week's honor when the hovered player can be inspected,
+- the bundled ArenaMaster.IO data for the character, once Forever regions are exported (`regionalData/FOREVER-<REGION>_<FACTION>.lua`, keyed `"Firstname Lastname-<ruleset>"`).
+
+`/ampvp` still opens the settings; the retail-only sections are replaced by a *WoW: Forever* block. `/ampvp key` prints diagnostics (build, ruleset, the lookup key for your target and which honor APIs the client exposes) -- useful when reporting issues from the beta.
+
+## Releasing
+
+Releases are cut by tag (`vYYYYMMDDHHMM`, created by the website's data refresh job) and packaged by `.github/workflows/release.yml` with the [BigWigs packager](https://github.com/BigWigsMods/packager). One multi-version build ships both flavors in a single zip -- the retail `.toc` files (`## Interface: 120100`) and the `*_Camelot.toc` siblings (`## Interface: 16001`) -- and the packager uploads it to CurseForge for both game versions (retail and WoW: Forever, game version type 88568). Do not use `-g forever`: the packager then checks every sub-addon TOC against that flavor and the retail-only `ArenaMaster_DB_*.toc` files fail the check.
+
+While GitHub Actions is unavailable on this account, run the packager locally from a checkout of the tag (on macOS it needs GNU sed):
+
+```sh
+git clone https://github.com/BigWigsMods/packager ~/packager   # once
+brew install gnu-sed                                           # once, macOS only
+export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"   # macOS only
+export CF_API_KEY=...          # CurseForge API token
+export GITHUB_OAUTH=...        # GitHub token, to attach the zip to the release
+git checkout vYYYYMMDDHHMM
+~/packager/release.sh          # -> .release/ArenaMasterPvPInspect-<tag>.zip, uploaded for 12.x + 1.60.x
+```
+
+Add `-d` to skip uploads and `-z` to skip the zip when you only want to see which TOCs and interface versions the packager picked (`Game version: 12.1.0, 1.60.1`). The packager needs a real `.git` directory, so run it from a normal clone rather than a git worktree.
+
 ## Support
 
 Interested in supporting the ongoing development of ArenaMaster.IO and getting some in-app benefits while you're at it? Visit our Patreon page to learn more about the mission and available perks.

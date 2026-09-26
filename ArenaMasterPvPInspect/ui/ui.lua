@@ -39,6 +39,21 @@ end)
 local function AMPVP_ShowProfileLink(unitName, unitServer)
 	if not unitName or unitName == "" then return end
 
+	-- Forever has no realms and two-part names; the URL shape is different and
+	-- unitServer may be empty or carry the surname. See modules/forever.lua.
+	if AMPVP_IS_FOREVER then
+		local url = AMPVP_ForeverProfileURL(unitName, unitServer, regionsTable[GetCurrentRegion()])
+		if not url then
+			AMPVP_Print("Your region is not supported for profile links.", "red")
+			return
+		end
+		AMPVP_CopyCharNameFrame2InputFrameTitleText:SetText(url)
+		AMPVP_CopyCharNameFrame2InputFrameTitleText:HighlightText()
+		AMPVP_CopyCharNameFrame2:Show()
+		AMPVP_CopyCharNameFrame2InputFrameTitleText:SetFocus()
+		return
+	end
+
 	if not unitServer or unitServer == "" then
 		unitServer = GetNormalizedRealmName() or GetRealmName()
 	end
